@@ -11,9 +11,13 @@
 *
 */
 
-package be.ddo.POGO;
+package be.ddo.POJO;
 
 public class Manager extends User {
+	public Manager(User user) {
+		super(user);
+	}
+
 	private static final long serialVersionUID = 6177578679763491932L;
 
 }

@@ -11,10 +11,15 @@
 *
 */
 
-package be.ddo.POGO;
+package be.ddo.POJO;
 
 public class Client extends User {
 	private static final long serialVersionUID = -4447211398508175156L;
 	
-
+	public Client(String name, String firstName, String email, String password, String cityAddress, String streetAddress, String numberAddress, String postalCodeAddress)
+	{
+		super(name, firstName, email, password, cityAddress, streetAddress, numberAddress, postalCodeAddress);	
+	}
+	
+	public Client(User user) { super(user); }
 }

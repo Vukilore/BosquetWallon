@@ -12,10 +12,20 @@
 */
 
 
-package be.ddo.POGO;
+package be.ddo.POJO;
 
 public class Command {
 	private String paymentMode;
 	private String shippingMethod;
 	private int totalCost;
+	
+	public String getPaymentMode() { return paymentMode; }
+	public void setPaymentMode(String paymentMode) { this.paymentMode = paymentMode; }
+	
+	public String getShippingMethod() { return shippingMethod; }
+	public void setShippingMethod(String shippingMethod) { this.shippingMethod = shippingMethod; }
+	
+	public int getTotalCost() { return totalCost; }
+	public void setTotalCost(int totalCost) { this.totalCost = totalCost; }
+	
 }

@@ -11,10 +11,20 @@
 *
 */
 
-package be.ddo.POGO;
+package be.ddo.POJO;
 
 public class Seat {
 	private int numSeat;
 	private int price;
+	
+	public int getNumSeat() { return numSeat; }
+	public void setNumSeat(int numSeat) { this.numSeat = numSeat; }
+	
+	
+	//
+	// GET/SET
+	//
+	public int getPrice() { return price; }
+	public void setPrice(int price) { this.price = price; }
 
 }

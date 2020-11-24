@@ -11,7 +11,7 @@
 *
 */
 
-package be.ddo.POGO;
+package be.ddo.POJO;
 
 public class Available {
 
