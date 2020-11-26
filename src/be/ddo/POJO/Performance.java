@@ -23,9 +23,12 @@ import be.ddo.DAO.AbstractDAOFactory;
 import be.ddo.DAO.DAO;
 
 public class Performance {
+	
+
 	private int id;
 	private Date beginDate;
 	private Date endDate;  
+	private Date openDate;
 	private Show show;
 	
 	public int getId() { return id; }
@@ -40,6 +43,8 @@ public class Performance {
 	public Show getShow() { return show; }
 	public void setShow(Show show) { this.show = show; }
 	
+	public Date getOpenDate() { return openDate; }
+	public void setOpenDate(Date openDate) { this.openDate = openDate; }
 	
 	public Performance(Show show, Date beginDate, Date endDate) {
 		this.show = show;
@@ -59,4 +64,9 @@ public class Performance {
 		this.endDate = result.getDate("endDate");
 		this.show = Show.find(result.getInt("IdShow"));
 	}	
+	
+	@Override
+	public String toString() {
+		return "[" + show.getTitle() + ": \n Date du début :" + beginDate + "\n Date de fin : " + endDate + " \n Date ouverture des portes :" + openDate + "]";
+	}
 }

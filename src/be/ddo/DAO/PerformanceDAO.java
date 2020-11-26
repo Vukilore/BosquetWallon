@@ -19,10 +19,8 @@ public class PerformanceDAO extends DAO<Performance> {
 	public boolean create(Performance obj) {
 		try {
 			this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeUpdate(
-                    "INSERT INTO User(name,firstName,streetAddress,numberAddress,postalCodeAddress,cityAddress,Email,Password,Discriminator) VALUES('"
-                            + obj.getName() + "','" + obj.getFirstName() + "','" + obj.getStreetAddress() + "','" + obj.getNumberAddress()
-                            + "','" + obj.getPostalCodeAddress() + "','" + obj.getCityAddress() + "','" + obj.getEmail() + "','"
-                            + obj.getPassword() + "','" + obj.getClass().getSimpleName().toString() + "')");
+                    "INSERT INTO Performance(beginDate, endDate, IdShow) VALUES('"
+                            + obj.getBeginDate() + "', "+ obj.getEndDate() + obj.getShow().getId() + "')");
 			return true;
 		}catch (SQLException e) {
 			e.printStackTrace();
@@ -37,23 +35,7 @@ public class PerformanceDAO extends DAO<Performance> {
 	public boolean update(Performance obj) {
 		return false;
 	}
-	
-	/*public ArrayList<Artist> getAll() {
-		ArrayList<Artist> listUser = new ArrayList<Artist>();
-		try {
-			ResultSet result = this.connect
-					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM User WHERE discriminator LIKES 'Artist'");
-			while(result.next()) {
-				Artist tmpUser = new Artist(result);
-				listUser.add(tmpUser);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return listUser;
-	}*/
-		
+
 	public ArrayList<Performance> getAll() {
 		ArrayList<Performance> listPerformance = new ArrayList<Performance>();
 		try {
@@ -71,50 +53,32 @@ public class PerformanceDAO extends DAO<Performance> {
 
 	
 	public Performance find(int id) {
-		User user = new User();
+		Performance performance = null;
 		try {
 			ResultSet result = this.connect
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM User WHERE idUser = " + id);
-			if (result.first())
-				user = new User(result);
+					.executeQuery("SELECT * FROM Performance WHERE idPerformance = " + id);
+			if (result.first()) 
+				performance = new Performance(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return user;
+		return performance;
 	}
 	
-	public Performance find(String email) {
-		User user = null;
+	public Performance find(String date) {
+		Performance performance = null;
 		try {
 			ResultSet result = this.connect
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM User WHERE email LIKE '" + email + "'");
+					.executeQuery("SELECT * FROM Performance WHERE beginDate LIKE '" + date + "'");
 			if (result.first())
 			{
-				String discriminator;
-				User tmpUser = new User(result);
-				discriminator = result.getString("Discriminator");
-				switch(discriminator)
-				{
-					case "Organizer" : 
-						user = new Organizer(tmpUser);
-						break;
-					
-					case "Client" : 
-						user = new Client(tmpUser);
-						break;
-						
-					case "Artist" : 
-						user = new Artist(tmpUser);
-						break;
-					default : user = null;
-				}
-				return user;
+	
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return performance;
 	}
 }

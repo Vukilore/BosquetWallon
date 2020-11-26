@@ -9,6 +9,7 @@ import be.ddo.POJO.Artist;
 import be.ddo.POJO.Client;
 import be.ddo.POJO.Organizer;
 import be.ddo.POJO.RoomPlanning;
+import be.ddo.POJO.Show;
 import be.ddo.POJO.User;
 
 public class RoomPlanningDAO extends DAO<RoomPlanning> {
@@ -19,10 +20,8 @@ public class RoomPlanningDAO extends DAO<RoomPlanning> {
 	public boolean create(RoomPlanning obj) {
 		try {
 			this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeUpdate(
-                    "INSERT INTO User(name,firstName,streetAddress,numberAddress,postalCodeAddress,cityAddress,Email,Password,Discriminator) VALUES('"
-                            + obj.getName() + "','" + obj.getFirstName() + "','" + obj.getStreetAddress() + "','" + obj.getNumberAddress()
-                            + "','" + obj.getPostalCodeAddress() + "','" + obj.getCityAddress() + "','" + obj.getEmail() + "','"
-                            + obj.getPassword() + "','" + obj.getClass().getSimpleName().toString() + "')");
+                    "INSERT INTO RoomPlanning(beginDate,endDate,IdShow,IdUser) VALUES('"
+                            + obj.getBeginDate() + "','" + obj.getEndDate() + "','" + obj.getShow().getId() + "','" + obj.getIdUser() + "')");
 			return true;
 		}catch (SQLException e) {
 			e.printStackTrace();
@@ -39,66 +38,49 @@ public class RoomPlanningDAO extends DAO<RoomPlanning> {
 	}
 	
 	public ArrayList<RoomPlanning> getAll() {
-		ArrayList<RoomPlanning> listPlanning = new ArrayList<RoomPlanning>();
+		ArrayList<RoomPlanning> listPlannings = new ArrayList<RoomPlanning>();
 		try {
 			ResultSet result = this.connect
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
 					.executeQuery("SELECT * FROM RoomPlanning");
 			while(result.next()) {
-				listPlanning.add(new RoomPlanning(result));
+				RoomPlanning rp = new RoomPlanning(result);
+				rp.setShow(Show.find(result.getInt("IdShow")));
+				listPlannings.add(rp);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return listPlanning;
+		return listPlannings;
 	}
 
-	
 	public RoomPlanning find(int id) {
-		RoomPlanning user = new RoomPlanning();
+		RoomPlanning rp = null;
 		try {
 			ResultSet result = this.connect
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
 					.executeQuery("SELECT * FROM User WHERE idUser = " + id);
-			if (result.first())
-				user = new User(result);
+			if (result.first()) {}
+				rp = new RoomPlanning(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return user;
+		return rp;
 	}
 	
-	public RoomPlanning find(String email) {
-		User user = null;
+	public RoomPlanning find(String date) {
+		RoomPlanning rp = null;
 		try {
 			ResultSet result = this.connect
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM User WHERE email LIKE '" + email + "'");
+					.executeQuery("SELECT * FROM User WHERE email LIKE '" + date + "'");
 			if (result.first())
 			{
-				String discriminator;
-				User tmpUser = new User(result);
-				discriminator = result.getString("Discriminator");
-				switch(discriminator)
-				{
-					case "Organizer" : 
-						user = new Organizer(tmpUser);
-						break;
-					
-					case "Client" : 
-						user = new Client(tmpUser);
-						break;
-						
-					case "Artist" : 
-						user = new Artist(tmpUser);
-						break;
-					default : user = null;
-				}
-				return user;
+				 
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return rp;
 	}
 }

@@ -48,13 +48,13 @@ public class Artist extends User {
 		return listArtist;
 	}
 	
-	public static Artist find(int i) {
+	/*public static Artist find(int i) {
 		Artist artist;
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<User> userDAO = adf.getUserDAO();
 		artist = new Artist(userDAO.find(i));
 		return artist;
-	}
+	}*/
 	
 	@Override
 	public String toString() {

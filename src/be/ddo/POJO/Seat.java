@@ -14,17 +14,24 @@
 package be.ddo.POJO;
 
 public class Seat {
+	private int idCommand;
 	private int numSeat;
 	private int price;
-	
-	public int getNumSeat() { return numSeat; }
-	public void setNumSeat(int numSeat) { this.numSeat = numSeat; }
+	private Performance performance;
 	
 	
 	//
 	// GET/SET
 	//
+	public int getIdCommand() { return idCommand; }
+	public void setIdCommand(int idCommand) { this.idCommand = idCommand; }
+	
+	public int getNumSeat() { return numSeat; }
+	public void setNumSeat(int numSeat) { this.numSeat = numSeat; }
+	
 	public int getPrice() { return price; }
 	public void setPrice(int price) { this.price = price; }
-
+	
+	public Performance getPerformance() { return performance; }
+	public void setPerformance(Performance performance) { this.performance = performance; }
 }

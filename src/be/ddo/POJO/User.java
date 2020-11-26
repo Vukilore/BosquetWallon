@@ -19,6 +19,9 @@ import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import be.ddo.DAO.AbstractDAOFactory;
+import be.ddo.DAO.DAO;
+
 
 public class User implements Serializable {
 	private static final long serialVersionUID = 1556913528679288788L;
@@ -108,6 +111,13 @@ public class User implements Serializable {
 	public String getNumberAddress() { return numberAddress; }
 	public void setNumberAddress(String numberAddress) { this.numberAddress = numberAddress; }
 	
+	
+	//
+	// OVERRIDE
+	//
+	@Override
+	public String toString() { return firstName + " " + name; }
+	
 	//
 	// FONCTIONS
 	//
@@ -124,12 +134,25 @@ public class User implements Serializable {
 				this.getCityAddress().isBlank() || this.getStreetAddress().isBlank() || this.getNumberAddress().isBlank() ||
 				this.getPostalCodeAddress().isBlank();
 	}
-
-	@Override
-	public String toString() {
-		
-		return firstName + " " + name;
+	
+	public boolean userExist() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<User> userDAO = adf.getUserDAO();
+		return userDAO.find(this.email) != null;
 	}
+
+	public void create() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<User> userDAO = adf.getUserDAO();
+		userDAO.create(this);
+	}
+	
+	public static User find(String email) {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<User> userDAO = adf.getUserDAO();
+		return userDAO.find(email);
+	}
+	
 
 	
 }

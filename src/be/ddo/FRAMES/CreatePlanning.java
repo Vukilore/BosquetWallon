@@ -45,6 +45,7 @@ import com.toedter.calendar.JDateChooser;
 import be.ddo.POJO.Artist;
 import be.ddo.POJO.Category;
 import be.ddo.POJO.Manager;
+import be.ddo.POJO.Organizer;
 import be.ddo.POJO.Performance;
 import be.ddo.POJO.RoomPlanning;
 import be.ddo.POJO.Show;
@@ -70,11 +71,11 @@ public class CreatePlanning extends JFrame {
 	private JTextField txtFConfiguration_Cirque_Diamant;
 
 	@SuppressWarnings("unchecked")
-	public CreatePlanning(Manager manager, ArrayList<Show> listShow, ArrayList<RoomPlanning> listPlanning) {
+	public CreatePlanning(Organizer organizer, ArrayList<Show> listShow, ArrayList<RoomPlanning> listPlanning) {
 		setTitle("Cr\u00E9ation d'un \u00E9venement");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 688, 457);
+		setBounds(100, 100, 688, 518);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -84,16 +85,35 @@ public class CreatePlanning extends JFrame {
 		panel_CreateShow.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"Choix du spectacle", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_CreateShow.setBounds(16, 19, 257, 164);
+		panel_CreateShow.setBounds(16, 19, 280, 398);
 		contentPane.add(panel_CreateShow);
 		panel_CreateShow.setLayout(null);
 
+		JLabel lblShow_Choice = new JLabel("Choix du spectacle :");
+		lblShow_Choice.setBounds(18, 21, 157, 14);
+		panel_CreateShow.add(lblShow_Choice);
+
+		JScrollPane sPane_ListArtist = new JScrollPane();
+		sPane_ListArtist.setBounds(18, 38, 190, 68);
+		panel_CreateShow.add(sPane_ListArtist);
+		
+		JList list = new JList();
+		sPane_ListArtist.setViewportView(list);
+
+		JLabel lblShow_PerClientMaxSeat = new JLabel("Place maximum par client :");
+		lblShow_PerClientMaxSeat.setBounds(28, 110, 180, 14);
+		panel_CreateShow.add(lblShow_PerClientMaxSeat);
+
+		JLabel lblShow_Type = new JLabel("Type de spectacle : ");
+		lblShow_Type.setBounds(27, 128, 181, 14);
+		panel_CreateShow.add(lblShow_Type);
+
 		JPanel panel_Configuration = new JPanel();
+		panel_Configuration.setBounds(10, 153, 256, 212);
+		panel_CreateShow.add(panel_Configuration);
 		panel_Configuration.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"Configuration de la salle", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel_Configuration.setBounds(17, 186, 256, 212);
-		contentPane.add(panel_Configuration);
 		panel_Configuration.setLayout(null);
 
 		JPanel panel_Debout = new JPanel();
@@ -238,60 +258,17 @@ public class CreatePlanning extends JFrame {
 		lblConfiguration_Configuration.setBounds(21, 23, 152, 14);
 		panel_Configuration.add(lblConfiguration_Configuration);
 
-		JLabel lblShow_Choice = new JLabel("Choix du spectacle :");
-		lblShow_Choice.setBounds(18, 21, 157, 14);
-		panel_CreateShow.add(lblShow_Choice);
-
-		JScrollPane sPane_ListArtist = new JScrollPane();
-		sPane_ListArtist.setBounds(18, 38, 190, 68);
-		panel_CreateShow.add(sPane_ListArtist);
-
-		JList list = new JList();
-		list.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		list.setVisibleRowCount(3);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setModel(new AbstractListModel() {
-			ArrayList<Show> values = listShow;
-
-			public int getSize() {
-				return values.size();
-			}
-
-			public Show getElementAt(int index) {
-				return values.get(index);
-			}
-
-		});
-		sPane_ListArtist.setViewportView(list);
-
-		JLabel lblShow_PerClientMaxSeat = new JLabel("Place maximum par client :");
-		lblShow_PerClientMaxSeat.setBounds(28, 110, 180, 14);
-		panel_CreateShow.add(lblShow_PerClientMaxSeat);
-
-		JLabel lblShow_Type = new JLabel("Type de spectacle : ");
-		lblShow_Type.setBounds(27, 128, 181, 14);
-		panel_CreateShow.add(lblShow_Type);
-
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
 				"Choix de la date", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(0, 0, 0)));
-		panel.setBounds(336, 19, 302, 164);
+		panel.setBounds(336, 19, 302, 194);
 		contentPane.add(panel);
 		panel.setLayout(null);
 
 		JLabel lblRoom_Date = new JLabel("Date de la r\u00E9servation :");
 		lblRoom_Date.setBounds(6, 19, 133, 14);
 		panel.add(lblRoom_Date);
-
-		JLabel lvlRoomDuration = new JLabel("Dur\u00E9e de la s\u00E9ance (heure) :");
-		lvlRoomDuration.setBounds(6, 48, 143, 14);
-		panel.add(lvlRoomDuration);
-
-		JSpinner spin_RoomDuration = new JSpinner();
-		spin_RoomDuration.setBounds(159, 45, 133, 20);
-		panel.add(spin_RoomDuration);
-		spin_RoomDuration.setModel(new SpinnerNumberModel(12, 1, 24, 1));
 
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
@@ -306,34 +283,44 @@ public class CreatePlanning extends JFrame {
 		dateChooser.setSelectableDateRange(cal.getTime(), maxCal.getTime());
 		panel.add(dateChooser);
 
-		JLabel lblNewLabel = new JLabel("Heure du commencement :");
-		lblNewLabel.setBounds(6, 73, 153, 14);
-		panel.add(lblNewLabel);
-
-		JComboBox cBox_BeginHour = new JComboBox();
-		cBox_BeginHour.setModel(new DefaultComboBoxModel(
-				new String[] { "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
-		cBox_BeginHour.setBounds(159, 69, 50, 22);
-		panel.add(cBox_BeginHour);
-
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(16, 98, 257, 55);
+		scrollPane.setBounds(20, 77, 257, 92);
 		panel.add(scrollPane);
 
 		JList listDate = new JList();
 		listDate.setEnabled(false);
 		scrollPane.setViewportView(listDate);
 
+		JLabel lblNewLabel_2 = new JLabel("Date non disponible :");
+		lblNewLabel_2.setBounds(22, 62, 165, 14);
+		panel.add(lblNewLabel_2);
+
 		JButton btnBooking = new JButton("R\u00E9server");
-		btnBooking.setBounds(563, 340, 89, 23);
+		btnBooking.setBounds(549, 455, 89, 23);
 		contentPane.add(btnBooking);
-		
-		JLabel lblWarning = new JLabel("<html><b>Attention :</b> la salle doit \u00EAtre remise en ordre et op\u00E9rationnelle pour le lendemain 12h.</html>");
-		lblWarning.setBounds(346, 186, 302, 28);
+
+		JLabel lblWarning = new JLabel(
+				"<html><b>Attention :</b> la salle doit \u00EAtre remise en ordre et op\u00E9rationnelle pour le lendemain 12h.</html>");
+		lblWarning.setBounds(336, 224, 302, 28);
 		contentPane.add(lblWarning);
 
+		JScrollPane sPane_Performance = new JScrollPane();
+		sPane_Performance.setBounds(349, 316, 208, 86);
+		contentPane.add(sPane_Performance);
+
+		JList listPerformance = new JList();
+		sPane_Performance.setViewportView(listPerformance);
+
+		JButton btnAddPerf = new JButton("+");
+		btnAddPerf.setBounds(463, 292, 41, 23);
+		contentPane.add(btnAddPerf);
+
+		JButton btnRemovePerf = new JButton("-");
+		btnRemovePerf.setBounds(514, 292, 41, 23);
+		contentPane.add(btnRemovePerf);
+
 		// =================================================================================
-		// OnClick List
+		// OnClick ListShow
 		// =================================================================================
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -407,32 +394,27 @@ public class CreatePlanning extends JFrame {
 		btnBooking.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// Récupération du show
-				Show show;
-				show = (Show) list.getSelectedValue();
-				
-				// Récupération des dates
-				Date reservingDate = dateChooser.getDate();
-				Date beginDate = reservingDate;
-				Date endDate = reservingDate;
-
-				reservingDate.setHours(12);
-				
-				
-				// Récupération de l'heure du début 
-				int beginHour = (int) cBox_BeginHour.getSelectedItem();
-				beginDate.setHours(beginHour);
-				
-				// Récupération du temps de la séance
-				int duration = (int) spin_RoomDuration.getValue();
-				DateUtils.addHours(endDate, duration);
-				
-				Performance perform = new Performance(show, beginDate, endDate);
-				
-				DateUtils.addHours(endDate, 1);
-				RoomPlanning room = new RoomPlanning(show, reservingDate, endDate);
-			
-				
+				/*
+				 * // Récupération du show Show show; show = (Show) list.getSelectedValue();
+				 * 
+				 * // Récupération des dates Date reservingDate = dateChooser.getDate(); Date
+				 * beginDate = reservingDate; Date endDate = reservingDate;
+				 * 
+				 * reservingDate.setHours(12);
+				 * 
+				 * 
+				 * // Récupération de l'heure du début int beginHour = (int)
+				 * cBox_BeginHour.getSelectedItem(); beginDate.setHours(beginHour);
+				 * 
+				 * // Récupération du temps de la séance int duration = (int)
+				 * spin_RoomDuration.getValue(); DateUtils.addHours(endDate, duration);
+				 * 
+				 * Performance perform = new Performance(show, beginDate, endDate);
+				 * 
+				 * DateUtils.addHours(endDate, 1); RoomPlanning room = new RoomPlanning(show,
+				 * reservingDate, endDate);
+				 * 
+				 */
 			}
 		});
 		// =================================================================================

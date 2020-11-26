@@ -37,27 +37,26 @@ public class RoomPlanning {
 	public RoomPlanning(Show show, Date beginDate, Date endDate) {
 		this.beginDate = beginDate;
 		this.endDate = endDate;
-		this.setShow(show);
 	}
 
 	public RoomPlanning(ResultSet result) throws SQLException {
 		this.id = result.getInt("id");
 		this.beginDate = result.getDate("beginDate");
 		this.endDate = result.getDate("endDate");
-		this.show = ??
+		this.idUser = result.getInt("IdUser");
 	}
 
 	public Date getEndDate() { return endDate; }
 	public void setEndDate(Date endDate) { this.endDate = endDate; }
+
+	public Show getShow() { return show; }
+	public void setShow(Show show) { this.show = show; }
 
 	public Date getBeginDate() { return beginDate; }
 	public void setBeginDate(Date beginDate) { this.beginDate = beginDate; }
 
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; }
-
-	public Show getShow() { return show; }
-	public void setShow(Show show) { this.show = show; }
 
 	public int getIdUser() { return idUser; }
 	public void setIdUser(int idUser) { this.idUser = idUser; }
@@ -66,5 +65,10 @@ public class RoomPlanning {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<RoomPlanning> planningDAO = adf.getRoomPlanningDAO();
 		return planningDAO.getAll();
+	}
+	
+	@Override
+	public String toString() {
+		return "Réservé pour [" + beginDate + " jusqu'au " + endDate + "]("+id+")";
 	}
 }

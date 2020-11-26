@@ -38,7 +38,7 @@ public class ChooseShow extends JFrame {
 	public ChooseShow(Client client, ArrayList<Show> listOfShow) {
 		setTitle("Choix du spectacle");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 596, 259);
+		setBounds(100, 100, 596, 261);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

@@ -23,8 +23,10 @@ public class Show {
 	private int id;
 	private String title;
 	private ArrayList<Artist> listArtist;
+	private ArrayList<Performance> listPerformance;
 	private int perUserMaxSeat;
 	private Configuration configuration;
+	private int IdRoomPlanning;
 		
 	//
 	//	GET/SET
@@ -41,9 +43,14 @@ public class Show {
 	public ArrayList<Artist> getListArtist() { return listArtist; }
 	public void setListArtist(ArrayList<Artist> listArtist) { this.listArtist = listArtist;	}
 	
+	public ArrayList<Performance> getListPerformance() { return listPerformance; }
+	public void setListPerformance(ArrayList<Performance> listPerformance) { this.listPerformance = listPerformance; }
+	
 	public Configuration getConfiguration() { return configuration; }
 	public void setConfiguration(Configuration configuration) { this.configuration = configuration; }
 	
+	public int getIdRoomPlanning() { return IdRoomPlanning; }
+	public void setIdRoomPlanning(int idRoomPlanning) { IdRoomPlanning = idRoomPlanning; }
 	@Override
 	public String toString() { return "("+id+") ["+ title + "]"; }
 	
@@ -80,6 +87,8 @@ public class Show {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Show> showDAO = adf.getShowDAO();
 		showDAO.create(this);
+		//this.getConfiguration().create(this.id);
+		
 	}
 	
 	public static ArrayList<Show> getAll() {
@@ -93,4 +102,5 @@ public class Show {
 		DAO<Show> showDAO = adf.getShowDAO();
 		return showDAO.find(id);
 	}
+	
 }

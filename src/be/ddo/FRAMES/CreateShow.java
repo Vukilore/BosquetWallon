@@ -337,6 +337,7 @@ public class CreateShow extends JFrame {
 								// Création du spectacle
 								Show show = new Show(txtFShow_Title.getText(), selectedArtist,
 										(int) spinPerClientMaxSeat.getValue(), config);
+								
 								// Sauvegarde du spectacle dans la BDD
 								show.create();
 

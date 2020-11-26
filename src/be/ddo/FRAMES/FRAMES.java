@@ -66,9 +66,6 @@ public class FRAMES extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-		DAO<User> userDAO = adf.getUserDAO();
-
 		// ===================================================================================
 		// JFrame : PANEL_ORGANIZER
 		// ===================================================================================
@@ -383,7 +380,7 @@ public class FRAMES extends JFrame {
 					ArrayList<RoomPlanning> listPlanning = new ArrayList<RoomPlanning>();
 					listPlanning.addAll(RoomPlanning.getAll());
 					
-					CreatePlanning cp = new CreatePlanning((Manager)mainUser, listShow, listPlanning);
+					CreatePlanning cp = new CreatePlanning((Organizer)mainUser, listShow, listPlanning);
 					cp.setVisible(true);
 				}
 				else JOptionPane.showMessageDialog(null, "Aucun spectacle n'est inscrit dans votre base de données !");
@@ -417,7 +414,7 @@ public class FRAMES extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// Vérification si l'email existe dans la BDD
-				User user = userDAO.find(txtFLogin_Email.getText());
+				User user = User.find(txtFLogin_Email.getText());
 				// Si l'utilisateur existe
 				if (user != null) {
 					// Si le mot de passe entré correspond à celui de l'utilisateur
@@ -485,7 +482,7 @@ public class FRAMES extends JFrame {
 							txtFSignin_PostalCodeAddress.getText());
 					if (!tmpUser.blankfField()) {
 						if (tmpUser.isValidEmail()) {
-							if (userDAO.find(txtFSignin_Email.getText().toString()) == null) {
+							if (User.find(txtFSignin_Email.getText().toString()) == null) {
 								// Création de l'utilisateur final
 								User finalUser = null;
 								// Selon le type d'utilisateur choisis
@@ -505,7 +502,7 @@ public class FRAMES extends JFrame {
 								}
 								// Si finalUser est bien typé on l'inscrit
 								if (finalUser != null) {
-									userDAO.create(finalUser);
+									finalUser.create();
 									UserInfo userInfo = new UserInfo(finalUser, true);
 									userInfo.setVisible(true);
 								} else

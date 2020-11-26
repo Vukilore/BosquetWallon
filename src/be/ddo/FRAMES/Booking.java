@@ -37,12 +37,7 @@ public class Booking extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lblShowTitle = new JLabel("TITRE DU SPECTACLE ");
-		lblShowTitle.setText(show.getTitle());
-		lblShowTitle.setFont(new Font("Gill Sans Ultra Bold", Font.PLAIN, 11));
-		lblShowTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblShowTitle.setBounds(85, 11, 363, 14);
-		contentPane.add(lblShowTitle);
+		
 
 		JScrollPane sPanePerformance = new JScrollPane();
 		sPanePerformance.setBounds(145, 59, 247, 99);
