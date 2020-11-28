@@ -13,6 +13,7 @@ import be.ddo.POJO.Artist;
 import be.ddo.POJO.Client;
 import be.ddo.POJO.Manager;
 import be.ddo.POJO.Organizer;
+import be.ddo.POJO.Planning;
 import be.ddo.POJO.RoomPlanning;
 import be.ddo.POJO.Show;
 import be.ddo.POJO.User;
@@ -53,7 +54,7 @@ public class FRAMES extends JFrame {
 	private JTextField txtFSignin_Email;
 	private JTextField txtFSignin_Password;
 	private JTextField txtFSignin_Confirm;
-	
+
 	private User mainUser;
 
 	public FRAMES() {
@@ -65,6 +66,28 @@ public class FRAMES extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
+
+		// ===================================================================================
+		// JFrame : PANEL_CLIENT
+		// ===================================================================================
+		JPanel panel_Client = new JPanel();
+		panel_Client.setBounds(239, 0, 303, 514);
+		contentPane.add(panel_Client);
+		panel_Client.setLayout(null);
+
+		JLabel lblClient_Name = new JLabel("Bonjour client");
+		lblClient_Name.setHorizontalAlignment(SwingConstants.CENTER);
+		lblClient_Name.setFont(new Font("Trebuchet MS", Font.PLAIN, 26));
+		lblClient_Name.setBounds(10, 26, 283, 31);
+		panel_Client.add(lblClient_Name);
+
+		JLabel lblClient_Booking = new JLabel("    R\u00E9server une place");
+		lblClient_Booking.setToolTipText("R\u00E9server une pi\u00E8ce de th\u00E9atre");
+		lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 18));
+		lblClient_Booking.setIcon(new ImageIcon(FRAMES.class.getResource("/be/ddo/FRAMES/res/image/ticket.png")));
+		lblClient_Booking.setBounds(10, 224, 267, 31);
+		panel_Client.add(lblClient_Booking);
+		panel_Client.setVisible(false);
 
 		// ===================================================================================
 		// JFrame : PANEL_ORGANIZER
@@ -141,27 +164,6 @@ public class FRAMES extends JFrame {
 		btnDisconnect.setBounds(111, 480, 119, 23);
 		btnDisconnect.setVisible(false);
 		panel_Frame.add(btnDisconnect);
-
-		// ===================================================================================
-		// JFrame : PANEL_CLIENT
-		// ===================================================================================
-		JPanel panel_Client = new JPanel();
-		panel_Client.setBounds(239, 0, 303, 514);
-		contentPane.add(panel_Client);
-		panel_Client.setLayout(null);
-
-		JLabel lblClient_Name = new JLabel("Bonjour client");
-		lblClient_Name.setHorizontalAlignment(SwingConstants.CENTER);
-		lblClient_Name.setFont(new Font("Trebuchet MS", Font.PLAIN, 26));
-		lblClient_Name.setBounds(10, 26, 283, 31);
-		panel_Client.add(lblClient_Name);
-
-		JLabel lblClient_Booking = new JLabel("    R\u00E9server une place");
-		lblClient_Booking.setToolTipText("R\u00E9server une pi\u00E8ce de th\u00E9atre");
-		lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 18));
-		lblClient_Booking.setIcon(new ImageIcon(FRAMES.class.getResource("/be/ddo/FRAMES/res/image/ticket.png")));
-		lblClient_Booking.setBounds(10, 224, 267, 31);
-		panel_Client.add(lblClient_Booking);
 
 		// ===================================================================================
 		// JFrame : PANEL_LOGIN
@@ -303,13 +305,38 @@ public class FRAMES extends JFrame {
 		panel_SignIn.add(btnSignin);
 
 		panel_SignIn.setVisible(false);
-		panel_Client.setVisible(false);
 		panel_Organizer.setVisible(false);
 		panel_Login.setVisible(true);
 
 		//
 		//
 		//
+
+		// =================================================================================
+		// Bouton réservation de ticket
+		// =================================================================================
+		lblClient_Booking.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO : réservation de ticket
+				ArrayList<Show> listOfShow = new ArrayList<Show>();
+				for(RoomPlanning planning : Planning.getInstance().getPlannings())
+					if(!listOfShow.contains(planning.getShow()))
+							listOfShow.add(planning.getShow());
+				CommandTicket ct = new CommandTicket((Client)mainUser, listOfShow);
+				ct.setVisible(true);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 20));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 18));
+			}
+		});
 
 		// =================================================================================
 		// Bouton liste spectacle
@@ -373,18 +400,13 @@ public class FRAMES extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				ArrayList<Show> listShow = new ArrayList<Show>();
-				listShow.addAll(Show.getAll());
-				if(listShow.size() > 0)
-				{
-					ArrayList<RoomPlanning> listPlanning = new ArrayList<RoomPlanning>();
-					listPlanning.addAll(RoomPlanning.getAll());
-					
-					CreatePlanning cp = new CreatePlanning((Organizer)mainUser, listShow, listPlanning);
+				ArrayList<Show> listShow = Show.getAll();
+				if (listShow.size() > 0) {
+					CreatePlanning cp = new CreatePlanning((Organizer) mainUser, listShow);
 					cp.setVisible(true);
-				}
-				else JOptionPane.showMessageDialog(null, "Aucun spectacle n'est inscrit dans votre base de données !");
-				
+				} else
+					JOptionPane.showMessageDialog(null, "Aucun spectacle n'est inscrit dans votre base de données !");
+
 			}
 		});
 
@@ -517,27 +539,6 @@ public class FRAMES extends JFrame {
 						JOptionPane.showMessageDialog(null, "Tous les champs doivent être remplis.");
 				} else
 					JOptionPane.showMessageDialog(null, "Les mots de passe doivent être identique");
-			}
-		});
-
-		// =================================================================================
-		// Bouton réservation de ticket
-		// =================================================================================
-		lblClient_Booking.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				ChooseShow cs = new ChooseShow((Client) mainUser, Show.getAll());
-				cs.setVisible(true);
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 20));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 18));
 			}
 		});
 

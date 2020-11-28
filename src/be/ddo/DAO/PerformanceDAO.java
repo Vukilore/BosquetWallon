@@ -1,9 +1,14 @@
 package be.ddo.DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import be.ddo.POJO.Artist;
 import be.ddo.POJO.Client;
@@ -18,11 +23,16 @@ public class PerformanceDAO extends DAO<Performance> {
 
 	public boolean create(Performance obj) {
 		try {
-			this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeUpdate(
-                    "INSERT INTO Performance(beginDate, endDate, IdShow) VALUES('"
-                            + obj.getBeginDate() + "', "+ obj.getEndDate() + obj.getShow().getId() + "')");
+			PreparedStatement statement = this.connect
+					.prepareStatement("INSERT INTO Performance(beginDate, endDate, openDate, IdShow) VALUES(?, ?, ?, ?)");
+
+			statement.setString(1, String.valueOf(obj.getBeginDate().getTime()));
+			statement.setString(2, String.valueOf(obj.getEndDate().getTime()));
+			statement.setString(3, String.valueOf(obj.getOpenDate().getTime()));
+			statement.setInt(4, obj.getShow().getId());
+			statement.executeUpdate();
 			return true;
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return false;
@@ -58,7 +68,7 @@ public class PerformanceDAO extends DAO<Performance> {
 			ResultSet result = this.connect
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
 					.executeQuery("SELECT * FROM Performance WHERE idPerformance = " + id);
-			if (result.first()) 
+			if (result.first()) {} 
 				performance = new Performance(result);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -74,7 +84,7 @@ public class PerformanceDAO extends DAO<Performance> {
 					.executeQuery("SELECT * FROM Performance WHERE beginDate LIKE '" + date + "'");
 			if (result.first())
 			{
-	
+				performance = new Performance(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

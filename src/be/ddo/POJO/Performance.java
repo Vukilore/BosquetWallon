@@ -52,21 +52,43 @@ public class Performance {
 		this.endDate = endDate;
 	}
 	
-	public static ArrayList<Performance> getAll() {
+	/*public static ArrayList<Performance> getAll() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Performance> performanceDAO = adf.getPerformanceDAO();
 		return performanceDAO.getAll();
 	}
+	*/
+	public void create() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<Performance> performanceDAO = adf.getPerformanceDAO();
+		performanceDAO.create(this);
+	}
 	
+	public Performance(Date beginDate, Date openDate, Date endDate, Show show) {
+		this.beginDate = beginDate;
+		this.openDate = openDate;
+		this.endDate = endDate;
+		this.show = show;		
+	}
 	public Performance(ResultSet result) throws SQLException {
 		this.id = result.getInt("IdPerformance");
-		this.beginDate = result.getDate("beginDate");
-		this.endDate = result.getDate("endDate");
-		this.show = Show.find(result.getInt("IdShow"));
-	}	
+		this.beginDate = new Date(Long.parseLong(result.getString("beginDate")));
+		this.endDate = new Date(Long.parseLong(result.getString("endDate")));
+		this.openDate = new Date(Long.parseLong(result.getString("openDate")));		
+	} 
+	public Performance(ResultSet result, Show show) throws SQLException {
+		this.id = result.getInt("IdPerformance");
+		this.beginDate = new Date(Long.parseLong(result.getString("beginDate")));
+		this.endDate = new Date(Long.parseLong(result.getString("endDate")));
+		this.openDate = new Date(Long.parseLong(result.getString("openDate")));
+		this.show = show;
+		System.out.println(endDate);
+	} 
 	
 	@Override
 	public String toString() {
-		return "[" + show.getTitle() + ": \n Date du début :" + beginDate + "\n Date de fin : " + endDate + " \n Date ouverture des portes :" + openDate + "]";
+		if(openDate != null && endDate != null && beginDate != null)
+			return "("+openDate.getDate()+"/"+openDate.getMonth()+")[De " + openDate.getHours() + "h  à " + endDate.getHours() + "h | Début: " + beginDate.getHours() + "h]";
+		else return "Date indisponible";
 	}
 }

@@ -13,6 +13,7 @@ import be.ddo.POJO.Client;
 import be.ddo.POJO.Configuration;
 import be.ddo.POJO.ConfigurationType;
 import be.ddo.POJO.Organizer;
+import be.ddo.POJO.Performance;
 import be.ddo.POJO.Show;
 import be.ddo.POJO.User;
 
@@ -138,7 +139,15 @@ public class ShowDAO extends DAO<Show> {
 				// Ajout de la configuration au spectacle
 				show.setConfiguration(config);
 				
-				// ANDDD...WE'RE DONE :)
+				// Dernièrement on ajoute la liste des représentations 
+				ArrayList<Performance> listPerformance = new ArrayList<Performance>();
+				result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
+						.executeQuery("SELECT * FROM Performance WHERE IdShow = " + id + "");
+				
+				while (result.next()) 
+					listPerformance.add(new Performance(result, show));
+				
+				show.setListPerformance(listPerformance);
 				}
 				
 			}
@@ -199,7 +208,14 @@ public class ShowDAO extends DAO<Show> {
 				// Ajout de la configuration au spectacle
 				show.setConfiguration(config);
 				
-				// ANDDD...WE'RE DONE :)
+				// Dernièrement on ajoute la liste des représentations 
+				ArrayList<Performance> listPerformance = new ArrayList<Performance>();
+				result = this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
+						.executeQuery("SELECT * FROM Performance WHERE IdShow = " + show.getId() + ")");
+
+				while (result.next()) 
+					listPerformance.add(new Performance(result, show));
+				show.setListPerformance(listPerformance);
 				}
 				
 			}

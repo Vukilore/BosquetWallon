@@ -31,7 +31,13 @@ public class Organizer extends User {
 	// Constructeur de loading
 	public Organizer(User user) {
 		super(user);
-		this.listBooking = Booking.getAllFromOrganizer(this.id);
+		this.getAllBookings();;
 	}
 
+	public void getAllBookings() {
+		ArrayList<Booking> listBooking = Booking.getAll();
+		for (Booking b : listBooking) 
+			if (b.getOrganizer().getId() == this.id)
+				this.listBooking.add(b);
+	}
 }

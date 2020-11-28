@@ -151,8 +151,5 @@ public class User implements Serializable {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<User> userDAO = adf.getUserDAO();
 		return userDAO.find(email);
-	}
-	
-
-	
+	}	
 }

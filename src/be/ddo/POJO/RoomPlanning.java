@@ -16,6 +16,8 @@ package be.ddo.POJO;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -27,24 +29,26 @@ public class RoomPlanning {
 	private Date beginDate;
 	private Date endDate;
 	private Show show;
-	private int idUser;
 	
 	public RoomPlanning(Date endDate, Date beginDate) {
 		this.endDate = endDate;
 		this.beginDate = beginDate;
 	}
 
-	public RoomPlanning(Show show, Date beginDate, Date endDate) {
+	public RoomPlanning(int idUser, Show show, Date beginDate, Date endDate) {
 		this.beginDate = beginDate;
 		this.endDate = endDate;
+		this.show = show;
 	}
 
 	public RoomPlanning(ResultSet result) throws SQLException {
-		this.id = result.getInt("id");
+		this.id = result.getInt("IdRoomPlanning");		
 		this.beginDate = result.getDate("beginDate");
-		this.endDate = result.getDate("endDate");
-		this.idUser = result.getInt("IdUser");
+		this.endDate = result.getDate("endDate");		
 	}
+
+	public int getId() { return id; }
+	public void setId(int id) { this.id = id; }
 
 	public Date getEndDate() { return endDate; }
 	public void setEndDate(Date endDate) { this.endDate = endDate; }
@@ -55,11 +59,6 @@ public class RoomPlanning {
 	public Date getBeginDate() { return beginDate; }
 	public void setBeginDate(Date beginDate) { this.beginDate = beginDate; }
 
-	public int getId() { return id; }
-	public void setId(int id) { this.id = id; }
-
-	public int getIdUser() { return idUser; }
-	public void setIdUser(int idUser) { this.idUser = idUser; }
 	
 	public static ArrayList<RoomPlanning> getAll() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
@@ -67,8 +66,16 @@ public class RoomPlanning {
 		return planningDAO.getAll();
 	}
 	
+	public void create() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<RoomPlanning> planningDAO = adf.getRoomPlanningDAO();
+		planningDAO.create(this);
+	}
+	
+	
+	
 	@Override
 	public String toString() {
-		return "Réservé pour [" + beginDate + " jusqu'au " + endDate + "]("+id+")";
+		return "Réservé pour [" + beginDate.getDate() +"/" + beginDate.getMonth() + " jusqu'au " + endDate.getDate() + "/"+endDate.getMonth()+"]("+id+")";
 	}
 }

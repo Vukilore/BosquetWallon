@@ -85,6 +85,7 @@ public class UserDAO extends DAO<User> {
 				{
 					case "Organizer" : 
 						user = new Organizer(tmpUser);
+						((Organizer) user).getAllBookings();
 						break;
 					
 					case "Client" : 

@@ -1,11 +1,11 @@
 package be.ddo.POJO;
 
-import java.util.List;
-
+import java.util.ArrayList;
+import java.util.Date;
 
 public final class Planning {
 	private static Planning instance = new Planning();
-	private static List<RoomPlanning> listRoomPlanning = null;
+	private static ArrayList<RoomPlanning> listRoomPlanning = null;
 	
 	
 	private Planning(){}
@@ -13,10 +13,11 @@ public final class Planning {
 	public static Planning getInstance(){ return instance; }
 	
 	
-	public List<RoomPlanning> get(){
+	public ArrayList<RoomPlanning> getPlannings(){
 		if(listRoomPlanning == null){
 			this.listRoomPlanning = RoomPlanning.getAll();
 		}
 		return listRoomPlanning;
 	}
+
 }

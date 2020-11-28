@@ -24,7 +24,7 @@ public class Booking {
 	private int deposit; // Acompte
 	private int solde; // Solde
 	private int price; // Prix
-	private int userId;
+	private Organizer organizer;
 	private String statut;
 	private RoomPlanning roomPlanning;
 
@@ -37,8 +37,8 @@ public class Booking {
 	public int getPrice() { return price; }
 	public void setPrice(int price) { this.price = price; }
 
-	public int getUserId() { return userId; }
-	public void setUserId(int userId) { this.userId = userId; }
+	public Organizer getOrganizer() { return organizer; }
+	public void setOrganizer(Organizer user) { this.organizer = user; }
 
 	public String getStatut() { return statut; }
 	public void setStatut(String statut) { this.statut = statut; }
@@ -46,24 +46,27 @@ public class Booking {
 	public RoomPlanning getRoomPlanning() { return roomPlanning; }
 	public void setRoomPlanning(RoomPlanning roomPlanning) { this.roomPlanning = roomPlanning; }
 	
-	public Booking(int deposit, int solde, int price, int userId, String statut) {
-		super();
-		this.deposit = deposit;
-		this.solde = solde;
+	public Booking(RoomPlanning roomPlanning, Organizer organizer, int price, int deposit) {
+		this.roomPlanning = roomPlanning;
+		this.organizer = organizer;
 		this.price = price;
-		this.userId = userId;
-		this.statut = statut;
+		this.deposit = deposit;
+		int _solde = (price - deposit);
+		this.solde = _solde;
+		if(_solde == 0)	this.statut = "Payé";
+		else this.statut = "Non payé";
 	}
 	
-	public static ArrayList<Booking> getAllFromOrganizer(int id) {
+	public static ArrayList<Booking> getAll() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Booking> bookingDAO = adf.getBookingDAO();
-		ArrayList<Booking> listBookingDAO = bookingDAO.getAll();
-		ArrayList<Booking> listBooking = new ArrayList<Booking>();
-		for (Booking b : listBookingDAO) 
-			if (b.getUserId() == id)
-				listBooking.add(b);
-		return listBooking;
+		return bookingDAO.getAll();
+	}
+	
+	public void create() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<Booking> bookingDAO = adf.getBookingDAO();
+		bookingDAO.create(this);
 	}
 
 }

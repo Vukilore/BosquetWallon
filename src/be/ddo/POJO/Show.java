@@ -15,11 +15,14 @@
 package be.ddo.POJO;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import be.ddo.DAO.AbstractDAOFactory;
 import be.ddo.DAO.DAO;
 
 public class Show {
+	
+
 	private int id;
 	private String title;
 	private ArrayList<Artist> listArtist;
@@ -80,6 +83,29 @@ public class Show {
 		this.title = title;
 		this.perUserMaxSeat = perUserMaxSeat;
 	}
+	
+	
+	
+	//
+	// Surcharge de méthode
+	//
+	@Override
+	public int hashCode() {
+		return Objects.hash(IdRoomPlanning, configuration, id, listArtist, listPerformance, perUserMaxSeat, title);
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Show))
+			return false;
+		Show other = (Show) obj;
+		return Objects.equals(title, other.title);
+	}
+	
+	
+	
+	
 	//
 	// Fonction
 	//
@@ -87,8 +113,6 @@ public class Show {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Show> showDAO = adf.getShowDAO();
 		showDAO.create(this);
-		//this.getConfiguration().create(this.id);
-		
 	}
 	
 	public static ArrayList<Show> getAll() {

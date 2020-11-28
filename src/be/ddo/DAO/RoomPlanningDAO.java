@@ -1,9 +1,11 @@
 package be.ddo.DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import be.ddo.POJO.Artist;
 import be.ddo.POJO.Client;
@@ -19,9 +21,12 @@ public class RoomPlanningDAO extends DAO<RoomPlanning> {
 
 	public boolean create(RoomPlanning obj) {
 		try {
-			this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeUpdate(
-                    "INSERT INTO RoomPlanning(beginDate,endDate,IdShow,IdUser) VALUES('"
-                            + obj.getBeginDate() + "','" + obj.getEndDate() + "','" + obj.getShow().getId() + "','" + obj.getIdUser() + "')");
+			PreparedStatement statement = this.connect.prepareStatement(
+		            "INSERT INTO RoomPlanning(beginDate,endDate,IdShow) VALUES(?, ?, ?)");
+		    statement.setObject(1, obj.getBeginDate());
+		    statement.setObject(2, obj.getEndDate());
+		    statement.setInt(3, obj.getShow().getId());
+		    statement.executeUpdate();
 			return true;
 		}catch (SQLException e) {
 			e.printStackTrace();
@@ -53,30 +58,18 @@ public class RoomPlanningDAO extends DAO<RoomPlanning> {
 		}
 		return listPlannings;
 	}
-
-	public RoomPlanning find(int id) {
-		RoomPlanning rp = null;
-		try {
-			ResultSet result = this.connect
-					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM User WHERE idUser = " + id);
-			if (result.first()) {}
-				rp = new RoomPlanning(result);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return rp;
-	}
 	
+	public RoomPlanning find(int id) { return null; }
+
 	public RoomPlanning find(String date) {
 		RoomPlanning rp = null;
 		try {
 			ResultSet result = this.connect
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM User WHERE email LIKE '" + date + "'");
+					.executeQuery("SELECT * FROM RoomPlanning WHERE beginDate LIKE '" + date + "'");
 			if (result.first())
 			{
-				 
+				rp = new RoomPlanning(result);
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

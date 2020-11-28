@@ -279,7 +279,7 @@ public class CreateShow extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if (!txtFShow_Title.getText().isBlank()) {
+				if (!txtFShow_Title.getText().isBlank() && !isShowExist(txtFShow_Title.getText())) {
 					ArrayList<Artist> selectedArtist = new ArrayList<Artist>();
 					selectedArtist.addAll(listArtist.getSelectedValuesList());
 					if (!selectedArtist.isEmpty()) {
@@ -380,7 +380,7 @@ public class CreateShow extends JFrame {
 								show.create();
 								JOptionPane.showMessageDialog(null,
 										"Votre pièce de théatre a bien été créée avec ses configurations.");
-								// dispose();
+								dispose();
 
 							} else
 								JOptionPane.showMessageDialog(null, "Veuillez remplir les prix des places !");
@@ -388,9 +388,17 @@ public class CreateShow extends JFrame {
 					} else
 						JOptionPane.showMessageDialog(null, "Aucun artiste n'a été selectionné !");
 				} else
-					JOptionPane.showMessageDialog(null, "Veuillez entrer un titre !");
+					JOptionPane.showMessageDialog(null, "Ce show existe déjà ou n'a pas un titre valide !");
 
 			}
 		});
+	}
+
+	private boolean isShowExist(String text) {
+		ArrayList<Show> listOfShow = Show.getAll();
+		for(Show show: listOfShow)
+			if(show.getTitle().compareTo(text) == 0)
+				return true;
+		return false;
 	}
 }

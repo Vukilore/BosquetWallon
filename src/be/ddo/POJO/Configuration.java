@@ -16,6 +16,7 @@ package be.ddo.POJO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import javax.sound.sampled.EnumControl.Type;
 
@@ -23,6 +24,8 @@ import be.ddo.DAO.AbstractDAOFactory;
 import be.ddo.DAO.DAO;
 
 public class Configuration {
+	
+
 	private int id;
 	private String configurationType;
 	private String description;
@@ -69,11 +72,6 @@ public class Configuration {
 		this.idShow = idShow;
 	}
 
-	/*
-	 * this.create(int id) adf.getConfDAO confDAO.Create() for(cat :
-	 * this.getCategoryList()) cat.create(this.id)
-	 * 
-	 */
 	public Configuration(ConfigurationType configurationType, ArrayList<Category> categoryList) {
 		this.configurationType = configurationType.toString();
 		switch (configurationType) {
@@ -122,7 +120,7 @@ public class Configuration {
 			break;
 		}
 	}
-
+	
 	public void Create() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Configuration> configDAO = adf.getConfigurationDAO();
