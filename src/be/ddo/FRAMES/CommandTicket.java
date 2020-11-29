@@ -26,6 +26,7 @@ import be.ddo.POJO.Show;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
@@ -35,6 +36,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JRadioButton;
 import java.awt.Font;
 import javax.swing.JButton;
+import javax.swing.ButtonGroup;
 
 public class CommandTicket extends JFrame {
 
@@ -48,6 +50,7 @@ public class CommandTicket extends JFrame {
 	private JTextField txtFConfiguration_Concert_Bronze;
 	private JTextField txtFConfiguration_Cirque_Diamant;
 	int totalCost = 0;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	@SuppressWarnings("unchecked")
 	public CommandTicket(Client client, ArrayList<Show> listOfShow) {
@@ -293,15 +296,18 @@ public class CommandTicket extends JFrame {
 		contentPane.add(lblNewLabel_4);
 
 		JRadioButton rdBtnVisa = new JRadioButton("VISA");
+		buttonGroup.add(rdBtnVisa);
 		rdBtnVisa.setBounds(391, 263, 109, 23);
 		contentPane.add(rdBtnVisa);
 
 		JRadioButton rdBtnPaypal = new JRadioButton("Paypal");
+		buttonGroup.add(rdBtnPaypal);
 		rdBtnPaypal.setToolTipText("Paypal");
 		rdBtnPaypal.setBounds(391, 286, 109, 23);
 		contentPane.add(rdBtnPaypal);
 
 		JRadioButton rdBtnSepa = new JRadioButton("Virement SEPA (20 jours avant spectacle)");
+		buttonGroup.add(rdBtnSepa);
 		rdBtnSepa.setBounds(391, 310, 270, 23);
 		contentPane.add(rdBtnSepa);
 		
@@ -314,19 +320,125 @@ public class CommandTicket extends JFrame {
 		btnCompute.setBounds(382, 355, 129, 23);
 		contentPane.add(btnCompute);
 		
-		JButton btnNewButton = new JButton("Commander");
-		btnNewButton.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnNewButton.setBounds(600, 379, 124, 49);
-		contentPane.add(btnNewButton);
+		JButton btnCommand = new JButton("Commander");
+		btnCommand.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnCommand.setBounds(600, 379, 124, 49);
+		contentPane.add(btnCommand);
 
-		//
-		//
-		//
+		// =================================================================================
+		// OnClick btnCommand
+		// =================================================================================
+		btnCommand.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (listShow.getSelectedValue() != null) {
+					if (listPerformance.getSelectedValue() != null) {
+						if((int)spin_Cirque_Diamant.getValue() != 0 &&  (int)spin_Cirque_Gold.getValue() != 0 &&
+						   (int)spin_Cirque_Silver.getValue() != 0  &&  (int)spin_Cirque_Bronze.getValue() != 0 &&
+						   (int)spin_Concert_Gold.getValue() != 0   &&  (int)spin_Concert_Silver.getValue() != 0 &&
+						   (int)spin_Concert_Bronze.getValue() != 0 &&  (int)spin_Debout.getValue() != 0) {
+							
+							
+							// Remise à zero le cout total
+							totalCost = 0;
+							
+							// Récupération du spectacle dans la liste
+							Show show = (Show) listShow.getSelectedValue();
+							
+							int totalPlace = (int)spin_Cirque_Diamant.getValue() + (int)spin_Cirque_Gold.getValue() +
+									   (int)spin_Cirque_Silver.getValue() + (int)spin_Cirque_Bronze.getValue()+
+									   (int)spin_Concert_Gold.getValue() +  (int)spin_Concert_Silver.getValue() +
+									   (int)spin_Concert_Bronze.getValue() + (int)spin_Debout.getValue();
+							
+							// Si il a commandé plus de place que l'organisateur autorise pour ce spectacle 
+							if(totalPlace > show.getPerUserMaxSeat()) {
+								// Calcule du coup total (on prend tout en compte en débit de la configuration 
+								//parce que flemme de tout séparer il est 3h du mat et j'ai envie de dormir)
+								for (Category c : show.getConfiguration().getCategoryList()) {
+									switch (c.getType()) {
+									case "CONCERT_GOLD", "CIRQUE_GOLD":
+										totalCost += (int)spin_Cirque_Gold.getValue() * c.getPrice();
+										totalCost += (int)spin_Concert_Gold.getValue() * c.getPrice();
+										break;
+									case "CONCERT_SILVER", "CIRQUE_SILVER":
+										totalCost += (int)spin_Cirque_Silver.getValue() * c.getPrice();
+										totalCost += (int)spin_Concert_Silver.getValue() * c.getPrice();
+										break;
+									case "CONCERT_BRONZE", "CIRQUE_BRONZE":
+										totalCost += (int)spin_Cirque_Bronze.getValue() * c.getPrice();
+										totalCost += (int)spin_Concert_Bronze.getValue() * c.getPrice();;
+										break;
+									case "DEBOUT":
+										totalCost += (int)spin_Debout.getValue() * c.getPrice();
+										break;
+									case "CIRQUE_DIAMANT":
+										totalCost += (int)spin_Cirque_Diamant.getValue() * c.getPrice();
+										break;
+									default:
+										break;
+									}
+								}
+								if(cbBoxShippingMethod.getSelectedItem().toString().compareTo("Livraison sécurisé (+10€)") == 0)
+									totalCost += 10;
+								
+								// +5 de frais de dossier
+								totalCost += 5;	
+								
+								// Décrémentation des places restantes et sauvegarde: 
+								for (Category c : show.getConfiguration().getCategoryList()) {
+									switch (c.getType()) {
+									case "CIRQUE_DIAMANT":
+										c.setSeatLeft(-(int)spin_Cirque_Diamant.getValue());
+										break;
+									case "CIRQUE_GOLD":
+										c.setSeatLeft(-(int)spin_Cirque_Gold.getValue());
+										break;
+									case "CIRQUE_SILVER":
+										c.setSeatLeft(-(int)spin_Cirque_Silver.getValue());
+										break;
+									case  "CIRQUE_BRONZE":
+										c.setSeatLeft(-(int)spin_Cirque_Bronze.getValue());	
+										break;
+									case "CONCERT_GOLD" :
+										c.setSeatLeft(-(int)spin_Concert_Gold.getValue());
+										break;
+									case "CONCERT_SILVER" :
+										c.setSeatLeft(-(int)spin_Concert_Silver.getValue());
+										break;
+									case "CONCERT_BRONZE" :
+										c.setSeatLeft(-(int)spin_Concert_Bronze.getValue());
+										break;
+									case "DEBOUT":
+										c.setSeatLeft(-(int)spin_Debout.getValue());
+										break;
+									default: break;
+									}
+									c.save();
+								}
+							} else ;
+							
+							
+							
+							
+							
+							
+						} else JOptionPane.showMessageDialog(null, "Vous devez au moins prendre une place !");
+					} else JOptionPane.showMessageDialog(null, "Selectionnez une représentation !");
+				} else JOptionPane.showMessageDialog(null, "Selectionnez un spectacle !");
+			}
+		});
 		
+		
+		
+		
+		
+		// =================================================================================
+		// OnClick btnCompute
+		// =================================================================================
 		btnCompute.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if(listShow.getSelectedValue() != null) {
+				if (listShow.getSelectedValue() != null) {
 					
 					// Remise à zero le cout total
 					totalCost = 0;
@@ -364,10 +476,12 @@ public class CommandTicket extends JFrame {
 						totalCost += 10;
 					
 					// +5 de frais de dossier
-					totalCost += 5;
+					totalCost += 5;	
 					lblTotalCost.setText("Total : "+totalCost+"");
 				}
 			}
+
+			
 		});
 
 		// =================================================================================
@@ -427,6 +541,7 @@ public class CommandTicket extends JFrame {
 					panel_Concert.setVisible(false);
 					txtFConfiguration_Debout.setText(String.valueOf(debout));
 					lblConfiguration_MaxSeat_Debout.setText("Debout (" + maxSeatDebout + " places)");
+					spin_Debout.setModel(new SpinnerNumberModel(0, 0, maxSeatDebout, 1));
 					break;
 				case "CIRQUE":
 					panel_Debout.setVisible(false);
@@ -437,9 +552,13 @@ public class CommandTicket extends JFrame {
 					txtFConfiguration_Cirque_Silver.setText(String.valueOf(silver));
 					txtFConfiguration_Cirque_Bronze.setText(String.valueOf(bronze));
 					lblConfiguration_MaxSeat_Cirque_Diamant.setText("Cat. Diamant : (" + maxSeatDiamant + " places)");
+					spin_Cirque_Diamant.setModel(new SpinnerNumberModel(0, 0, maxSeatDiamant, 1));
 					lblConfiguration_MaxSeat_Cirque_Gold.setText("Cat. Or : (" + maxSeatGold + " places)");
+					spin_Cirque_Gold.setModel(new SpinnerNumberModel(0, 0, maxSeatGold, 1));
 					lblConfiguration_MaxSeat_Cirque_Silver.setText("Cat. Argent : (" + maxSeatSilver + " places)");
+					spin_Cirque_Silver.setModel(new SpinnerNumberModel(0, 0, maxSeatSilver, 1));
 					lblConfiguration_MaxSeat_Cirque_Bronze.setText("Cat. Bronze : (" + maxSeatBronze + " places)");
+					spin_Cirque_Bronze.setModel(new SpinnerNumberModel(0, 0, maxSeatBronze, 1));
 					break;
 
 				case "CONCERT":
@@ -447,8 +566,11 @@ public class CommandTicket extends JFrame {
 					panel_Cirque.setVisible(false);
 					panel_Concert.setVisible(true);
 					lblConfiguration_MaxSeat_Concert_Gold.setText("Cat. Or : (" + maxSeatGold + " places)");
+					spin_Concert_Gold.setModel(new SpinnerNumberModel(0, 0, maxSeatGold, 1));
 					lblConfiguration_MaxSeat_Concert_Silver.setText("Cat. Argent : (" + maxSeatSilver + " places)");
+					spin_Concert_Silver.setModel(new SpinnerNumberModel(0, 0, maxSeatSilver, 1));
 					lblConfiguration_MaxSeat_Concert_Bronze.setText("Cat. Bronze : (" + maxSeatBronze + " places)");
+					spin_Concert_Bronze.setModel(new SpinnerNumberModel(0, 0, maxSeatBronze, 1));
 					txtFConfiguration_Concert_Gold.setText(String.valueOf(gold));
 					txtFConfiguration_Concert_Silver.setText(String.valueOf(silver));
 					txtFConfiguration_Concert_Bronze.setText(String.valueOf(bronze));
@@ -459,6 +581,7 @@ public class CommandTicket extends JFrame {
 				}
 			}
 		});
-
 	}
+	
+
 }

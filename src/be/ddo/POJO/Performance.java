@@ -52,12 +52,7 @@ public class Performance {
 		this.endDate = endDate;
 	}
 	
-	/*public static ArrayList<Performance> getAll() {
-		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-		DAO<Performance> performanceDAO = adf.getPerformanceDAO();
-		return performanceDAO.getAll();
-	}
-	*/
+ 
 	public void create() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Performance> performanceDAO = adf.getPerformanceDAO();
@@ -82,7 +77,6 @@ public class Performance {
 		this.endDate = new Date(Long.parseLong(result.getString("endDate")));
 		this.openDate = new Date(Long.parseLong(result.getString("openDate")));
 		this.show = show;
-		System.out.println(endDate);
 	} 
 	
 	@Override

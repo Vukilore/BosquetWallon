@@ -64,6 +64,7 @@ public class Category {
 				this.maxSeat = 1500;
 				break;
 		}
+		this.seatLeft = this.maxSeat;
 	}
 
 	public Category(ResultSet result) throws SQLException {
@@ -117,5 +118,11 @@ public class Category {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Category> categoryDAO = adf.getCategoryDAO();
 		return categoryDAO.getAll();
+	}
+	public void save() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<Category> catDAO = adf.getCategoryDAO();
+		catDAO.update(this);
+		
 	}
 }

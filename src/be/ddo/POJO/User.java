@@ -48,12 +48,16 @@ public class User implements Serializable {
 		this.numberAddress = user.getNumberAddress();
 		this.postalCodeAddress = user.getPostalCodeAddress();
 	}
-	
+	/*
 	public User(int _id, String _name, String _firstName) {
 		id = _id;
 		name =_name;
 		firstName = _firstName;
 		
+	}*/
+	
+	public User(String email) {
+		this.email = email;
 	}
 	
 	public User(String name, String firstName, String email, String password, String cityAddress, String streetAddress, String numberAddress, String postalCodeAddress)
@@ -68,9 +72,7 @@ public class User implements Serializable {
 		this.postalCodeAddress = postalCodeAddress;		
 	}
 	
-	//
-	//	GET/SET
-	//
+	
 	
 	public User(ResultSet result) throws SQLException {
 		this.id = result.getInt("idUser");
@@ -83,7 +85,10 @@ public class User implements Serializable {
 		this.numberAddress = result.getString("numberAddress");
 		this.postalCodeAddress = result.getString("postalCodeAddress");	
 	}
-
+	
+	//
+	//	GET/SET
+	//
 	public int getId() { return id; }
 	public void setId(int id) {	this.id = id; }
 	
@@ -147,9 +152,9 @@ public class User implements Serializable {
 		userDAO.create(this);
 	}
 	
-	public static User find(String email) {
+	public User find() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<User> userDAO = adf.getUserDAO();
-		return userDAO.find(email);
+		return userDAO.find(this.email);
 	}	
 }

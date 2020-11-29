@@ -20,9 +20,9 @@ public class BookingDAO extends DAO<Booking> {
 	public boolean create(Booking obj) {
 		try {
 			this.connect.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY).executeUpdate(
-					"INSERT INTO Booking(deposit,solde,statut,price,IdUser, idRoomPlanning) VALUES('"
+					"INSERT INTO Booking(deposit,solde,statut, price, idRoomPlanning, IdUser) VALUES('"
 							+ obj.getDeposit() + "','" + obj.getSolde() + "','" + obj.getStatut() + "','"
-							+ obj.getPrice() + "','" + obj.getOrganizer().getId() + "','" + obj.getRoomPlanning().getId() + "')");
+							+ obj.getPrice() + "','" + obj.getRoomPlanning().getId() + "',"+obj.getOrganizer().getId()+")");
 			System.out.println("Création du booking : " + obj);
 			return true;
 		} catch (SQLException e) {
@@ -46,7 +46,7 @@ public class BookingDAO extends DAO<Booking> {
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
 					.executeQuery("SELECT * FROM Booking");
 			while (result.next()) {
-				 
+				 listBooking.add(new Booking(result));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

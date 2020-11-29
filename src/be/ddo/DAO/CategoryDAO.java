@@ -1,6 +1,7 @@
 package be.ddo.DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -41,7 +42,17 @@ public class CategoryDAO extends DAO<Category> {
 
 	@Override
 	public boolean update(Category obj) {
-		// TODO Auto-generated method stub
+		try {
+			String request = "UPDATE Category SET seatLeft = ? WHERE IdCategory = ?";
+			PreparedStatement preparedReq = this.connect.prepareStatement(request);
+			preparedReq.setInt(1, obj.getSeatLeft());
+			preparedReq.setInt(2, obj.getId());
+			preparedReq.executeUpdate();
+			preparedReq.close();
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return false;
 	}
 

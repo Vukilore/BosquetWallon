@@ -47,6 +47,10 @@ public class RoomPlanning {
 		this.endDate = result.getDate("endDate");		
 	}
 
+	public RoomPlanning(int id) {
+		this.id = id;
+	}
+
 	public int getId() { return id; }
 	public void setId(int id) { this.id = id; }
 
@@ -59,7 +63,6 @@ public class RoomPlanning {
 	public Date getBeginDate() { return beginDate; }
 	public void setBeginDate(Date beginDate) { this.beginDate = beginDate; }
 
-	
 	public static ArrayList<RoomPlanning> getAll() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<RoomPlanning> planningDAO = adf.getRoomPlanningDAO();
@@ -71,11 +74,17 @@ public class RoomPlanning {
 		DAO<RoomPlanning> planningDAO = adf.getRoomPlanningDAO();
 		planningDAO.create(this);
 	}
-	
-	
-	
+
+	public RoomPlanning find() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<RoomPlanning> planningDAO = adf.getRoomPlanningDAO();
+		return planningDAO.find(this.id);
+	}
+
 	@Override
 	public String toString() {
 		return "Réservé pour [" + beginDate.getDate() +"/" + beginDate.getMonth() + " jusqu'au " + endDate.getDate() + "/"+endDate.getMonth()+"]("+id+")";
 	}
+
+	
 }

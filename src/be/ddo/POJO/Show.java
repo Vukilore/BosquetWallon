@@ -68,7 +68,7 @@ public class Show {
 		this.perUserMaxSeat = perUserMaxSeat;
 		this.configuration = configuration;
 	}
-	public Show() {	}
+	public Show(int id) { this.id = id;	}
 	
 	public Show(int id, String title, int perUserMaxSeat, Configuration configuration) {
 		this.id = id;
@@ -121,7 +121,7 @@ public class Show {
 		return showDAO.getAll();
 	}
 	
-	public static Show find(int id) {
+	public Show find() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Show> showDAO = adf.getShowDAO();
 		return showDAO.find(id);

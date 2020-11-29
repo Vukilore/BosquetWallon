@@ -84,8 +84,7 @@ public class UserDAO extends DAO<User> {
 				switch(discriminator)
 				{
 					case "Organizer" : 
-						user = new Organizer(tmpUser);
-						((Organizer) user).getAllBookings();
+						user = new Organizer(tmpUser);			
 						break;
 					
 					case "Client" : 
@@ -121,11 +120,9 @@ public class UserDAO extends DAO<User> {
 				case "Organizer":
 					user = new Organizer(tmpUser);
 					break;
-
 				case "Client":
 					user = new Client(tmpUser);
 					break;
-
 				case "Artist":
 					user = new Artist(tmpUser);
 					break;

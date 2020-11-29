@@ -28,13 +28,9 @@ public class Artist extends User {
 		super(name, firstName, email, password, cityAddress, streetAddress, numberAddress, postalCodeAddress);
 	}
 
-	public Artist(User user) {
-		super(user);
-	}
+	public Artist(User user) { super(user); }
 
-	public Artist(ResultSet result) throws SQLException {
-		super(result);
-	}
+	public Artist(ResultSet result) throws SQLException { super(result); }
 
 	public static ArrayList<Artist> getAll() {
 		ArrayList<User> listUser = new ArrayList<User>();
@@ -47,14 +43,6 @@ public class Artist extends User {
 				listArtist.add((Artist) user);
 		return listArtist;
 	}
-	
-	/*public static Artist find(int i) {
-		Artist artist;
-		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-		DAO<User> userDAO = adf.getUserDAO();
-		artist = new Artist(userDAO.find(i));
-		return artist;
-	}*/
 	
 	@Override
 	public String toString() {

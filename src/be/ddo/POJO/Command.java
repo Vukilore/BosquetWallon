@@ -38,4 +38,6 @@ public class Command {
 	public ArrayList<Seat> getListSeat() { return listSeat; }
 	public void setListSeat(ArrayList<Seat> listSeat) { this.listSeat = listSeat; }
 	
+	public Command() {}
+	
 }

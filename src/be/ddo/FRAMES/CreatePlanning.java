@@ -717,7 +717,7 @@ public class CreatePlanning extends JFrame {
 						} catch (ParseException e1) {
 							e1.printStackTrace();
 						}
-
+						System.out.println("id planning :" + rp.getId());
 						// Ajout de la réservation de la salle
 						Booking booking = new Booking(rp, organizer, totalCost, (int) spinDeposit.getValue());
 						booking.create();

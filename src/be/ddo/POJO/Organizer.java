@@ -15,6 +15,9 @@ package be.ddo.POJO;
 
 import java.util.ArrayList;
 
+import be.ddo.DAO.AbstractDAOFactory;
+import be.ddo.DAO.DAO;
+
 public class Organizer extends User {
 	private static final long serialVersionUID = -3879113998006029020L;
 	private ArrayList<Booking> listBooking;
@@ -31,13 +34,27 @@ public class Organizer extends User {
 	// Constructeur de loading
 	public Organizer(User user) {
 		super(user);
-		this.getAllBookings();;
+		this.getAllBookings();
 	}
+	
+	public Organizer(int id) { this.id = id; }
 
 	public void getAllBookings() {
-		ArrayList<Booking> listBooking = Booking.getAll();
-		for (Booking b : listBooking) 
-			if (b.getOrganizer().getId() == this.id)
-				this.listBooking.add(b);
+		ArrayList<Booking> tmplistOfBooking = new ArrayList<Booking>();
+		ArrayList<Booking> listOfBooking = Booking.getAll();
+		if(listOfBooking.size() > 0) {
+			for (Booking b : listOfBooking) 
+				if (b.getOrganizer().getId() == this.id) {
+					tmplistOfBooking.add(b);
+					System.out.println(b);
+				}
+			this.setListBooking(tmplistOfBooking);
+		}	
+	}
+	
+	public Organizer find() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<User> userDAO = adf.getUserDAO();
+		return (Organizer) userDAO.find(this.id);
 	}
 }

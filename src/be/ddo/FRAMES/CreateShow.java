@@ -387,8 +387,7 @@ public class CreateShow extends JFrame {
 						}
 					} else
 						JOptionPane.showMessageDialog(null, "Aucun artiste n'a été selectionné !");
-				} else
-					JOptionPane.showMessageDialog(null, "Ce show existe déjà ou n'a pas un titre valide !");
+				} else JOptionPane.showMessageDialog(null, "Ce show existe déjà ou n'a pas un titre valide !");
 
 			}
 		});

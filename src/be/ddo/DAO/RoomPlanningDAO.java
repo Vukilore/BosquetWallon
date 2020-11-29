@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -22,11 +23,16 @@ public class RoomPlanningDAO extends DAO<RoomPlanning> {
 	public boolean create(RoomPlanning obj) {
 		try {
 			PreparedStatement statement = this.connect.prepareStatement(
-		            "INSERT INTO RoomPlanning(beginDate,endDate,IdShow) VALUES(?, ?, ?)");
+		            "INSERT INTO RoomPlanning(beginDate,endDate,IdShow) VALUES(?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 		    statement.setObject(1, obj.getBeginDate());
 		    statement.setObject(2, obj.getEndDate());
 		    statement.setInt(3, obj.getShow().getId());
 		    statement.executeUpdate();
+		    ResultSet rs = statement.getGeneratedKeys();
+            if(rs.next())
+            {
+                obj.setId(rs.getInt(1));
+            }
 			return true;
 		}catch (SQLException e) {
 			e.printStackTrace();
@@ -50,7 +56,8 @@ public class RoomPlanningDAO extends DAO<RoomPlanning> {
 					.executeQuery("SELECT * FROM RoomPlanning");
 			while(result.next()) {
 				RoomPlanning rp = new RoomPlanning(result);
-				rp.setShow(Show.find(result.getInt("IdShow")));
+				Show show = new Show(result.getInt("IdShow"));
+				rp.setShow(show.find());
 				listPlannings.add(rp);
 			}
 		} catch (SQLException e) {
