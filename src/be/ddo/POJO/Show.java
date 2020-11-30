@@ -29,7 +29,6 @@ public class Show {
 	private ArrayList<Performance> listPerformance;
 	private int perUserMaxSeat;
 	private Configuration configuration;
-	private int IdRoomPlanning;
 		
 	//
 	//	GET/SET
@@ -52,8 +51,7 @@ public class Show {
 	public Configuration getConfiguration() { return configuration; }
 	public void setConfiguration(Configuration configuration) { this.configuration = configuration; }
 	
-	public int getIdRoomPlanning() { return IdRoomPlanning; }
-	public void setIdRoomPlanning(int idRoomPlanning) { IdRoomPlanning = idRoomPlanning; }
+
 	@Override
 	public String toString() { return "("+id+") ["+ title + "]"; }
 	
@@ -91,7 +89,7 @@ public class Show {
 	//
 	@Override
 	public int hashCode() {
-		return Objects.hash(IdRoomPlanning, configuration, id, listArtist, listPerformance, perUserMaxSeat, title);
+		return Objects.hash( configuration, id, listArtist, listPerformance, perUserMaxSeat, title);
 	}
 	@Override
 	public boolean equals(Object obj) {

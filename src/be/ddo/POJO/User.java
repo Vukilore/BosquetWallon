@@ -48,14 +48,7 @@ public class User implements Serializable {
 		this.numberAddress = user.getNumberAddress();
 		this.postalCodeAddress = user.getPostalCodeAddress();
 	}
-	/*
-	public User(int _id, String _name, String _firstName) {
-		id = _id;
-		name =_name;
-		firstName = _firstName;
-		
-	}*/
-	
+
 	public User(String email) {
 		this.email = email;
 	}
