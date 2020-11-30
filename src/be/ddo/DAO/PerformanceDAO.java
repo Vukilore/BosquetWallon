@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,7 +25,7 @@ public class PerformanceDAO extends DAO<Performance> {
 	public boolean create(Performance obj) {
 		try {
 			PreparedStatement statement = this.connect
-					.prepareStatement("INSERT INTO Performance(beginDate, endDate, openDate, IdShow) VALUES(?, ?, ?, ?)");
+					.prepareStatement("INSERT INTO Performance(beginDate, endDate, openDate, IdShow) VALUES(?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
 
 			statement.setString(1, String.valueOf(obj.getBeginDate().getTime()));
 			statement.setString(2, String.valueOf(obj.getEndDate().getTime()));

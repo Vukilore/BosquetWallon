@@ -34,7 +34,6 @@ public class Organizer extends User {
 	// Constructeur de loading
 	public Organizer(User user) {
 		super(user);
-		this.getAllBookings();
 	}
 	
 	public Organizer(int id) { this.id = id; }
@@ -43,11 +42,13 @@ public class Organizer extends User {
 		ArrayList<Booking> tmplistOfBooking = new ArrayList<Booking>();
 		ArrayList<Booking> listOfBooking = Booking.getAll();
 		if(listOfBooking.size() > 0) {
-			for (Booking b : listOfBooking) 
+			for (Booking b : listOfBooking)  {
 				if (b.getOrganizer().getId() == this.id) {
 					tmplistOfBooking.add(b);
-					System.out.println(b);
+					b.setOrganizer(this);
 				}
+			}
+				
 			this.setListBooking(tmplistOfBooking);
 		}	
 	}

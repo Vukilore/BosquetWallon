@@ -16,6 +16,7 @@ package be.ddo.POJO;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import be.ddo.DAO.AbstractDAOFactory;
 import be.ddo.DAO.DAO;
@@ -46,15 +47,11 @@ public class Booking {
 	public RoomPlanning getRoomPlanning() { return roomPlanning; }
 	public void setRoomPlanning(RoomPlanning roomPlanning) { this.roomPlanning = roomPlanning; }
 	
-	public Booking(RoomPlanning roomPlanning, Organizer organizer, int price, int deposit) {
+	public Booking(RoomPlanning roomPlanning, Organizer organizer, int deposit) {
+		System.out.println("DEPOSIT : " + deposit);
 		this.roomPlanning = roomPlanning;
 		this.organizer = organizer;
-		this.price = price;
 		this.deposit = deposit;
-		int _solde = (price - deposit);
-		this.solde = _solde;
-		if(_solde == 0)	this.statut = "Payé";
-		else this.statut = "Non payé";
 	}
 	
 	public Booking(ResultSet result) throws SQLException {
@@ -69,6 +66,7 @@ public class Booking {
 		this.statut = result.getString("statut");
 		
 	}
+	
 	public static ArrayList<Booking> getAll() {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Booking> bookingDAO = adf.getBookingDAO();
@@ -79,6 +77,22 @@ public class Booking {
 		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
 		DAO<Booking> bookingDAO = adf.getBookingDAO();
 		bookingDAO.create(this);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void totalCost() {
+		switch (this.roomPlanning.getBeginDate().getDay()) {
+		case Calendar.FRIDAY, Calendar.SATURDAY:
+			this.price = 4500;
+			break;
+		default:
+			this.price = 3000;
+			break;
+		}
+		if(this.price - this.deposit == 0) {
+			this.solde = 0;
+			this.statut = "payé";
+		}
 	}
 
 	

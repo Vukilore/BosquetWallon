@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import javax.swing.AbstractListModel;
@@ -17,10 +18,14 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import be.ddo.POJO.Category;
+import be.ddo.POJO.CategoryType;
 import be.ddo.POJO.Client;
+import be.ddo.POJO.Command;
+import be.ddo.POJO.CommandType;
 import be.ddo.POJO.Performance;
 import be.ddo.POJO.Planning;
 import be.ddo.POJO.RoomPlanning;
+import be.ddo.POJO.Seat;
 import be.ddo.POJO.Show;
 
 import javax.swing.JScrollPane;
@@ -333,11 +338,31 @@ public class CommandTicket extends JFrame {
 			public void mousePressed(MouseEvent e) {
 				if (listShow.getSelectedValue() != null) {
 					if (listPerformance.getSelectedValue() != null) {
-						if((int)spin_Cirque_Diamant.getValue() != 0 &&  (int)spin_Cirque_Gold.getValue() != 0 &&
-						   (int)spin_Cirque_Silver.getValue() != 0  &&  (int)spin_Cirque_Bronze.getValue() != 0 &&
-						   (int)spin_Concert_Gold.getValue() != 0   &&  (int)spin_Concert_Silver.getValue() != 0 &&
-						   (int)spin_Concert_Bronze.getValue() != 0 &&  (int)spin_Debout.getValue() != 0) {
-							
+						
+						// Mise à jours des spinners
+						try {
+							spin_Cirque_Diamant.commitEdit(); spin_Cirque_Gold.commitEdit();
+							spin_Cirque_Silver.commitEdit(); spin_Cirque_Bronze.commitEdit();
+							spin_Concert_Gold.commitEdit(); spin_Concert_Silver.commitEdit();
+							spin_Concert_Bronze.commitEdit(); spin_Debout.commitEdit();
+						} catch (ParseException e1) {
+							e1.printStackTrace();
+						}
+						
+						// Obtention de la valeur de tous les spinners
+						int cirqueDiamant = (int)spin_Cirque_Diamant.getValue();
+						int cirqueGold = (int)spin_Cirque_Gold.getValue();
+						int cirqueSilver = (int)spin_Cirque_Silver.getValue();
+						int cirqueBronze = (int)spin_Cirque_Bronze.getValue();
+						int concertGold = (int)spin_Concert_Gold.getValue();
+						int concertSilver = (int)spin_Concert_Silver.getValue();
+						int concertBronze = (int) spin_Concert_Bronze.getValue();
+						int debout = (int)spin_Debout.getValue();
+						
+						
+						// Si il y a au moins une place de prise 
+						if(cirqueDiamant > 0 || cirqueGold > 0 || cirqueSilver > 0 || cirqueBronze 
+								> 0 || concertGold > 0 || concertSilver > 0 || concertBronze > 0 || debout > 0) {
 							
 							// Remise à zero le cout total
 							totalCost = 0;
@@ -345,83 +370,129 @@ public class CommandTicket extends JFrame {
 							// Récupération du spectacle dans la liste
 							Show show = (Show) listShow.getSelectedValue();
 							
-							int totalPlace = (int)spin_Cirque_Diamant.getValue() + (int)spin_Cirque_Gold.getValue() +
-									   (int)spin_Cirque_Silver.getValue() + (int)spin_Cirque_Bronze.getValue()+
-									   (int)spin_Concert_Gold.getValue() +  (int)spin_Concert_Silver.getValue() +
-									   (int)spin_Concert_Bronze.getValue() + (int)spin_Debout.getValue();
+							int totalPlace = cirqueDiamant+cirqueGold+cirqueSilver+cirqueBronze+concertGold+concertSilver+concertBronze+debout;
 							
 							// Si il a commandé plus de place que l'organisateur autorise pour ce spectacle 
-							if(totalPlace > show.getPerUserMaxSeat()) {
-								// Calcule du coup total (on prend tout en compte en débit de la configuration 
-								//parce que flemme de tout séparer il est 3h du mat et j'ai envie de dormir)
-								for (Category c : show.getConfiguration().getCategoryList()) {
-									switch (c.getType()) {
-									case "CONCERT_GOLD", "CIRQUE_GOLD":
-										totalCost += (int)spin_Cirque_Gold.getValue() * c.getPrice();
-										totalCost += (int)spin_Concert_Gold.getValue() * c.getPrice();
-										break;
-									case "CONCERT_SILVER", "CIRQUE_SILVER":
-										totalCost += (int)spin_Cirque_Silver.getValue() * c.getPrice();
-										totalCost += (int)spin_Concert_Silver.getValue() * c.getPrice();
-										break;
-									case "CONCERT_BRONZE", "CIRQUE_BRONZE":
-										totalCost += (int)spin_Cirque_Bronze.getValue() * c.getPrice();
-										totalCost += (int)spin_Concert_Bronze.getValue() * c.getPrice();;
-										break;
-									case "DEBOUT":
-										totalCost += (int)spin_Debout.getValue() * c.getPrice();
-										break;
-									case "CIRQUE_DIAMANT":
-										totalCost += (int)spin_Cirque_Diamant.getValue() * c.getPrice();
-										break;
-									default:
-										break;
-									}
-								}
-								if(cbBoxShippingMethod.getSelectedItem().toString().compareTo("Livraison sécurisé (+10€)") == 0)
-									totalCost += 10;
+							if(show.getPerUserMaxSeat() >= totalPlace) {
 								
-								// +5 de frais de dossier
-								totalCost += 5;	
-								
+								//Création des places
+								ArrayList<Seat> listSeat = new ArrayList<Seat>();
 								// Décrémentation des places restantes et sauvegarde: 
 								for (Category c : show.getConfiguration().getCategoryList()) {
 									switch (c.getType()) {
 									case "CIRQUE_DIAMANT":
-										c.setSeatLeft(-(int)spin_Cirque_Diamant.getValue());
+										if(cirqueDiamant > 0) {
+											Seat seat = new Seat(CategoryType.valueOf(c.getType()), (Performance) listPerformance.getSelectedValue(),cirqueDiamant, c.getPrice());
+											listSeat.add(seat);
+											totalCost +=  cirqueDiamant * c.getPrice();	
+											c.setSeatLeft(c.getSeatLeft()-cirqueDiamant);
+										}
 										break;
 									case "CIRQUE_GOLD":
-										c.setSeatLeft(-(int)spin_Cirque_Gold.getValue());
+										
+										if(cirqueGold > 0) {
+											Seat seat = new Seat(CategoryType.valueOf(c.getType()), (Performance) listPerformance.getSelectedValue(), cirqueGold, c.getPrice());
+											listSeat.add(seat);
+											totalCost +=  cirqueGold * c.getPrice();	
+											c.setSeatLeft(c.getSeatLeft()-cirqueGold);
+										}
 										break;
 									case "CIRQUE_SILVER":
-										c.setSeatLeft(-(int)spin_Cirque_Silver.getValue());
+										if(cirqueSilver > 0) {
+											Seat seat = new Seat(CategoryType.valueOf(c.getType()), (Performance) listPerformance.getSelectedValue(), cirqueSilver, c.getPrice());
+											listSeat.add(seat);
+											totalCost +=  cirqueSilver * c.getPrice();	
+											c.setSeatLeft(c.getSeatLeft()-cirqueSilver);
+										}
 										break;
 									case  "CIRQUE_BRONZE":
-										c.setSeatLeft(-(int)spin_Cirque_Bronze.getValue());	
+										if(cirqueBronze > 0) {
+											Seat seat = new Seat(CategoryType.valueOf(c.getType()), (Performance) listPerformance.getSelectedValue(), cirqueBronze, c.getPrice());
+											listSeat.add(seat);
+											totalCost +=  cirqueBronze * c.getPrice();	
+											c.setSeatLeft(c.getSeatLeft()-cirqueBronze);
+										}
 										break;
 									case "CONCERT_GOLD" :
-										c.setSeatLeft(-(int)spin_Concert_Gold.getValue());
+										if(concertGold > 0) {
+											Seat seat = new Seat(CategoryType.valueOf(c.getType()), (Performance) listPerformance.getSelectedValue(),  concertGold, c.getPrice());
+											listSeat.add(seat);
+											totalCost +=  concertGold * c.getPrice();	
+											c.setSeatLeft(c.getSeatLeft()-concertGold);
+										}
 										break;
 									case "CONCERT_SILVER" :
-										c.setSeatLeft(-(int)spin_Concert_Silver.getValue());
+										if(concertSilver > 0) {
+											Seat seat = new Seat(CategoryType.valueOf(c.getType()), (Performance) listPerformance.getSelectedValue(), concertSilver, c.getPrice());
+											listSeat.add(seat);
+											totalCost +=  concertSilver * c.getPrice();	
+											c.setSeatLeft(c.getSeatLeft()-concertSilver);
+										}
 										break;
 									case "CONCERT_BRONZE" :
-										c.setSeatLeft(-(int)spin_Concert_Bronze.getValue());
+										if(concertBronze > 0) {
+											Seat seat = new Seat(CategoryType.valueOf(c.getType()),  (Performance) listPerformance.getSelectedValue(), concertBronze, c.getPrice());
+											listSeat.add(seat);
+											totalCost +=  concertBronze  * c.getPrice();	
+											c.setSeatLeft(c.getSeatLeft()-concertBronze);
+										}
 										break;
 									case "DEBOUT":
-										c.setSeatLeft(-(int)spin_Debout.getValue());
+										if(debout > 0) {
+											Seat seat = new Seat(CategoryType.valueOf(c.getType()),	(Performance) listPerformance.getSelectedValue(), debout, c.getPrice());
+											listSeat.add(seat);
+											totalCost +=  debout  * c.getPrice();	
+											c.setSeatLeft(c.getSeatLeft()-debout);
+										}
 										break;
 									default: break;
 									}
 									c.save();
 								}
-							} else ;
-							
-							
-							
-							
-							
-							
+								
+								// Définition de la méthode de retrait des billets
+								CommandType shippingType = null;
+								switch (cbBoxShippingMethod.getSelectedItem().toString()) {
+									case "Sur place le jour même":
+										shippingType = CommandType.PLACE;
+										break;
+									case "Livraison avec timbre PRIOR":
+										shippingType = CommandType.PRIOR;
+										break;
+									case "Livraison sécurisé (+10€)" :
+										shippingType = CommandType.SECURE;
+										totalCost += 10;
+										break;
+								}
+								
+								// Définition du moyen de payement
+								CommandType payementType;
+								if(rdBtnVisa.isSelected())
+									payementType = CommandType.VISA;
+								else if(rdBtnPaypal.isSelected())
+									payementType = CommandType.PAYPAL;
+								else
+									payementType = CommandType.SEPA;
+								
+								// +5 de frais de dossier
+								totalCost += 5;	
+								
+								// Création de l'objet commande avec les informations fournies
+								Command command = new Command(client.getId(),shippingType, payementType, totalCost, listSeat);
+								command.create();
+								
+								// Sauvegarde des places
+								for(Seat s : listSeat)
+								{
+									s.setIdCommand(command.getId());
+									s.create();
+								}
+								
+								JOptionPane.showMessageDialog(null, "Vous avez bien réserver les tickets pour " + totalCost +"€");
+								dispose();
+								
+								
+							} else JOptionPane.showMessageDialog(null, "Vous ne pouvez commander que " + show.getPerUserMaxSeat());
 						} else JOptionPane.showMessageDialog(null, "Vous devez au moins prendre une place !");
 					} else JOptionPane.showMessageDialog(null, "Selectionnez une représentation !");
 				} else JOptionPane.showMessageDialog(null, "Selectionnez un spectacle !");

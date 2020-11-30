@@ -683,7 +683,7 @@ public class CreatePlanning extends JFrame {
 		// =================================================================================
 		btnBooking.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mousePressed(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {				
 				if (listOfPerformance.size() > 0) {
 
 					Date date = dateChooser.getDate();
@@ -717,9 +717,13 @@ public class CreatePlanning extends JFrame {
 						} catch (ParseException e1) {
 							e1.printStackTrace();
 						}
-						System.out.println("id planning :" + rp.getId());
 						// Ajout de la réservation de la salle
-						Booking booking = new Booking(rp, organizer, totalCost, (int) spinDeposit.getValue());
+						Booking booking = new Booking(rp, organizer, (int) spinDeposit.getValue());
+						
+						// Calcul du prix final
+						booking.totalCost();
+						
+						//Sauvegarde de la réservation
 						booking.create();
 
 						// Dispose de la fenetre

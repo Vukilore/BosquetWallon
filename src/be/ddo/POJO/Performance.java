@@ -52,13 +52,6 @@ public class Performance {
 		this.endDate = endDate;
 	}
 	
- 
-	public void create() {
-		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
-		DAO<Performance> performanceDAO = adf.getPerformanceDAO();
-		performanceDAO.create(this);
-	}
-	
 	public Performance(Date beginDate, Date openDate, Date endDate, Show show) {
 		this.beginDate = beginDate;
 		this.openDate = openDate;
@@ -69,7 +62,9 @@ public class Performance {
 		this.id = result.getInt("IdPerformance");
 		this.beginDate = new Date(Long.parseLong(result.getString("beginDate")));
 		this.endDate = new Date(Long.parseLong(result.getString("endDate")));
-		this.openDate = new Date(Long.parseLong(result.getString("openDate")));		
+		this.openDate = new Date(Long.parseLong(result.getString("openDate")));	
+		Show show = new Show(result.getInt("iShow"));
+		this.show = show.find();
 	} 
 	public Performance(ResultSet result, Show show) throws SQLException {
 		this.id = result.getInt("IdPerformance");
@@ -78,6 +73,24 @@ public class Performance {
 		this.openDate = new Date(Long.parseLong(result.getString("openDate")));
 		this.show = show;
 	} 
+	
+	public Performance(int id) {
+		this.id = id;
+	}
+	
+	
+	public void create() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<Performance> performanceDAO = adf.getPerformanceDAO();
+		performanceDAO.create(this);
+	}
+	
+	public Performance find() {
+		AbstractDAOFactory adf = AbstractDAOFactory.getFactory(AbstractDAOFactory.DAO_FACTORY);
+		DAO<Performance> performanceDAO = adf.getPerformanceDAO();
+		return performanceDAO.find(this.id);
+	}
+	
 	
 	@Override
 	public String toString() {

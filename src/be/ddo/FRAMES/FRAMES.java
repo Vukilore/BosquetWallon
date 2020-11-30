@@ -329,6 +329,7 @@ public class FRAMES extends JFrame {
 
 			@Override
 			public void mousePressed(MouseEvent e) {
+				System.out.println("LISTE : " +((Organizer) mainUser).getListBooking());
 				if(((Organizer) mainUser).getListBooking() != null) {
 					ArrayList<Show> listShow = new ArrayList<Show>();
 					for(Booking booking : ((Organizer) mainUser).getListBooking())
@@ -336,7 +337,7 @@ public class FRAMES extends JFrame {
 					if(listShow.size() > 0) {
 						listPlanning lp = new listPlanning(listShow);
 						lp.setVisible(true);
-					}else JOptionPane.showMessageDialog(null, "Vous n'avez aucune réservation de salle en cours !");
+					}else JOptionPane.showMessageDialog(null, "Vous n'avez aucune réservation de salle  en cours !");
 				} else JOptionPane.showMessageDialog(null, "Vous n'avez aucune réservation de salle en cours !");
 			}
 		});

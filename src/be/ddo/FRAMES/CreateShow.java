@@ -304,6 +304,8 @@ public class CreateShow extends JFrame {
 
 								// Sauvegarde du spectacle dans la BDD
 								show.create();
+								JOptionPane.showMessageDialog(null, "Le spectacle a bien été créé");
+								dispose();
 
 							} else
 								JOptionPane.showMessageDialog(null, "Veuillez remplir le prix de la place !");

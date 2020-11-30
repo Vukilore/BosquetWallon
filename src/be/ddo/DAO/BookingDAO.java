@@ -1,6 +1,7 @@
 package be.ddo.DAO;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -42,10 +43,12 @@ public class BookingDAO extends DAO<Booking> {
 	public ArrayList<Booking> getAll() {
 		ArrayList<Booking> listBooking = new ArrayList<Booking>();
 		try {
-			ResultSet result = this.connect
-					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM Booking");
-			while (result.next()) {
+			
+			String request = "SELECT * FROM Booking";
+			PreparedStatement preparedRequest = this.connect.prepareStatement(request);
+			ResultSet result = preparedRequest.executeQuery();
+			preparedRequest.close();
+			while(result.next()) {
 				 listBooking.add(new Booking(result));
 			}
 		} catch (SQLException e) {
