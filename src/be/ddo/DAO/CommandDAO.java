@@ -17,7 +17,6 @@ public class CommandDAO extends DAO<Command> {
 	@Override
 	public boolean create(Command obj) {
 		try {
-			System.out.println("ICI APPEL");
 			PreparedStatement statement = this.connect
 					.prepareStatement("INSERT INTO Command(IdUser, shippingMethod, paymentMode, totalCost) VALUES(?, ?, ?, ?)");
 

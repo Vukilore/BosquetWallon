@@ -342,6 +342,8 @@ public class CreateShow extends JFrame {
 								
 								// Sauvegarde du spectacle dans la BDD
 								show.create();
+								JOptionPane.showMessageDialog(null, "Le spectacle a bien été créé");
+								dispose();
 
 							} else
 								JOptionPane.showMessageDialog(null, "Veuillez remplir les prix des places !");
@@ -360,7 +362,11 @@ public class CreateShow extends JFrame {
 								ArrayList<Category> listCategory = new ArrayList<Category>();
 
 								// Définition du prix de la place
-								int price = Integer.parseInt(txtFConfiguration_Cirque_Gold.getText());
+								int price = Integer.parseInt(txtFConfiguration_Cirque_Diamant.getText());
+								// Ajout des catégories à la liste
+								listCategory.add(new Category(CategoryType.CIRQUE_DIAMANT, price));
+								// Définition du prix de la place
+								price = Integer.parseInt(txtFConfiguration_Cirque_Gold.getText());
 								// Ajout des catégories à la liste
 								listCategory.add(new Category(CategoryType.CIRQUE_GOLD, price));
 								// Définition du prix de la place
@@ -380,8 +386,7 @@ public class CreateShow extends JFrame {
 										(int) spinPerClientMaxSeat.getValue(), config);
 								// Sauvegarde du spectacle dans la BDD
 								show.create();
-								JOptionPane.showMessageDialog(null,
-										"Votre pièce de théatre a bien été créée avec ses configurations.");
+								JOptionPane.showMessageDialog(null, "Le spectacle a bien été créé");
 								dispose();
 
 							} else

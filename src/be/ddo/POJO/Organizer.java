@@ -20,7 +20,7 @@ import be.ddo.DAO.DAO;
 
 public class Organizer extends User {
 	private static final long serialVersionUID = -3879113998006029020L;
-	private ArrayList<Booking> listBooking;
+	private ArrayList<Booking> listBooking = new ArrayList<Booking>();
 
 	public ArrayList<Booking> getListBooking() { return listBooking; }
 	public void setListBooking(ArrayList<Booking> listBooking) { this.listBooking = listBooking; }
@@ -44,13 +44,13 @@ public class Organizer extends User {
 		if(listOfBooking.size() > 0) {
 			for (Booking b : listOfBooking)  {
 				if (b.getOrganizer().getId() == this.id) {
-					tmplistOfBooking.add(b);
+					System.out.println(b + "EST APPELE");
+					listBooking.add(b);
 					b.setOrganizer(this);
 				}
 			}
-				
-			this.setListBooking(tmplistOfBooking);
 		}	
+		System.out.println(listBooking);
 	}
 	
 	public Organizer find() {

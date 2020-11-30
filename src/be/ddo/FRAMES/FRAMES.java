@@ -12,10 +12,13 @@ import be.ddo.DAO.UserDAO;
 import be.ddo.POJO.Artist;
 import be.ddo.POJO.Booking;
 import be.ddo.POJO.Client;
+import be.ddo.POJO.Command;
 import be.ddo.POJO.Manager;
 import be.ddo.POJO.Organizer;
+import be.ddo.POJO.Performance;
 import be.ddo.POJO.Planning;
 import be.ddo.POJO.RoomPlanning;
+import be.ddo.POJO.Seat;
 import be.ddo.POJO.Show;
 import be.ddo.POJO.User;
 import javax.swing.JOptionPane;
@@ -67,43 +70,18 @@ public class FRAMES extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-
-		// ===================================================================================
-		// JFrame : PANEL_ORGANIZER
-		// ===================================================================================
-
-		JPanel panel_Organizer = new JPanel();
-		panel_Organizer.setLayout(null);
-		panel_Organizer.setBounds(239, 0, 303, 514);
-		contentPane.add(panel_Organizer);
-
-		JLabel lblOrganizer_Name = new JLabel("Bonjour organisateur");
-		lblOrganizer_Name.setHorizontalAlignment(SwingConstants.CENTER);
-		lblOrganizer_Name.setFont(new Font("Trebuchet MS", Font.PLAIN, 26));
-		lblOrganizer_Name.setBounds(10, 26, 283, 31);
-		panel_Organizer.add(lblOrganizer_Name);
-
-		JLabel lblOrganizer_CreateEvent = new JLabel("Cr\u00E9er un \u00E9venement");
-		lblOrganizer_CreateEvent.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
-		lblOrganizer_CreateEvent.setIcon(new ImageIcon(FRAMES.class.getResource("/be/ddo/FRAMES/res/image/event.png")));
-		lblOrganizer_CreateEvent.setBounds(10, 237, 283, 36);
-		panel_Organizer.add(lblOrganizer_CreateEvent);
-
-		JLabel lblOrganizer_ListEvent = new JLabel("Evenements pr\u00E9vus");
-		lblOrganizer_ListEvent
-				.setIcon(new ImageIcon(FRAMES.class.getResource("/be/ddo/FRAMES/res/image/listEvent.png")));
-		lblOrganizer_ListEvent.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
-		lblOrganizer_ListEvent.setBounds(10, 298, 283, 36);
-		panel_Organizer.add(lblOrganizer_ListEvent);
-
-		JLabel lblOrganizer_CreateShow = new JLabel("Cr\u00E9er un spectacle");
-		lblOrganizer_CreateShow
-				.setIcon(new ImageIcon(FRAMES.class.getResource("/be/ddo/FRAMES/res/image/theater.png")));
-		lblOrganizer_CreateShow.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
-		lblOrganizer_CreateShow.setBounds(10, 184, 283, 36);
-		panel_Organizer.add(lblOrganizer_CreateShow);
-		panel_Organizer.setVisible(false);
-		panel_Organizer.setVisible(false);
+		
+		JPanel panel_Manager = new JPanel();
+		panel_Manager.setBounds(239, 0, 303, 514);
+		contentPane.add(panel_Manager);
+		panel_Manager.setLayout(null);
+		
+		JLabel lblManager = new JLabel("Liste des plannings");
+		lblManager.setIcon(new ImageIcon(FRAMES.class.getResource("/be/ddo/FRAMES/res/image/event.png")));
+		lblManager.setBounds(10, 210, 283, 32);
+		lblManager.setToolTipText("R\u00E9server une pi\u00E8ce de th\u00E9atre");
+		lblManager.setFont(new Font("Stencil", Font.PLAIN, 18));
+		panel_Manager.add(lblManager);
 
 		// ===================================================================================
 		// JFrame : PANEL_CLIENT
@@ -126,6 +104,36 @@ public class FRAMES extends JFrame {
 		lblClient_Booking.setBounds(10, 224, 267, 31);
 		panel_Client.add(lblClient_Booking);
 		panel_Client.setVisible(false);
+
+		// ===================================================================================
+		// JFrame : PANEL_ORGANIZER
+		// ===================================================================================
+
+		JPanel panel_Organizer = new JPanel();
+		panel_Organizer.setLayout(null);
+		panel_Organizer.setBounds(239, 0, 303, 514);
+		contentPane.add(panel_Organizer);
+
+		JLabel lblOrganizer_Name = new JLabel("Bonjour organisateur");
+		lblOrganizer_Name.setHorizontalAlignment(SwingConstants.CENTER);
+		lblOrganizer_Name.setFont(new Font("Trebuchet MS", Font.PLAIN, 26));
+		lblOrganizer_Name.setBounds(10, 26, 283, 31);
+		panel_Organizer.add(lblOrganizer_Name);
+
+		JLabel lblOrganizer_CreateEvent = new JLabel("Cr\u00E9er un \u00E9venement");
+		lblOrganizer_CreateEvent.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+		lblOrganizer_CreateEvent.setIcon(new ImageIcon(FRAMES.class.getResource("/be/ddo/FRAMES/res/image/event.png")));
+		lblOrganizer_CreateEvent.setBounds(10, 237, 283, 36);
+		panel_Organizer.add(lblOrganizer_CreateEvent);
+
+		JLabel lblOrganizer_CreateShow = new JLabel("Cr\u00E9er un spectacle");
+		lblOrganizer_CreateShow
+				.setIcon(new ImageIcon(FRAMES.class.getResource("/be/ddo/FRAMES/res/image/theater.png")));
+		lblOrganizer_CreateShow.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+		lblOrganizer_CreateShow.setBounds(10, 184, 283, 36);
+		panel_Organizer.add(lblOrganizer_CreateShow);
+		panel_Organizer.setVisible(false);
+		panel_Organizer.setVisible(false);
 
 		// ===================================================================================
 		// JFrame : PANEL_FRAME
@@ -306,39 +314,62 @@ public class FRAMES extends JFrame {
 		btnSignin.setBounds(84, 440, 116, 23);
 		panel_SignIn.add(btnSignin);
 
+		panel_Manager.setVisible(false);
 		panel_SignIn.setVisible(false);
 		panel_Login.setVisible(true);
-
-		//
-		//
-		//
-
+		
 		// =================================================================================
-		// Bouton liste spectacle
+		// Bouton réservation de ticket
 		// =================================================================================
-		lblOrganizer_ListEvent.addMouseListener(new MouseAdapter() {
+		lblClient_Booking.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO : réservation de ticket
+				ArrayList<Show> listOfShow = new ArrayList<Show>();
+				for (RoomPlanning planning : Planning.getInstance().getPlannings())
+					if (!listOfShow.contains(planning.getShow()))
+						listOfShow.add(planning.getShow());
+				if (listOfShow.size() > 0) {
+					CommandTicket ct = new CommandTicket((Client) mainUser, listOfShow);
+					ct.setVisible(true);
+				} else
+					JOptionPane.showMessageDialog(null,
+							"Aucun spectacle n'est prévu pour le moment. C'EST LE CONFINEMENT OKAY !?");
+
+			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				lblOrganizer_ListEvent.setFont(new Font("Trebuchet MS", Font.PLAIN, 26));
+				lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 20));
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				lblOrganizer_ListEvent.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+				lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 18));
 			}
-
+		});
+		// =================================================================================
+		// Bouton liste planning
+		// =================================================================================
+		lblManager.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				lblManager.setFont(new Font("Stencil", Font.PLAIN, 20));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				lblManager.setFont(new Font("Stencil", Font.PLAIN, 18));
+			}
 			@Override
 			public void mousePressed(MouseEvent e) {
-				System.out.println("LISTE : " +((Organizer) mainUser).getListBooking());
-				if(((Organizer) mainUser).getListBooking() != null) {
-					ArrayList<Show> listShow = new ArrayList<Show>();
-					for(Booking booking : ((Organizer) mainUser).getListBooking())
-						listShow.add(booking.getRoomPlanning().getShow());	
-					if(listShow.size() > 0) {
-						listPlanning lp = new listPlanning(listShow);
-						lp.setVisible(true);
-					}else JOptionPane.showMessageDialog(null, "Vous n'avez aucune réservation de salle  en cours !");
-				} else JOptionPane.showMessageDialog(null, "Vous n'avez aucune réservation de salle en cours !");
+				ArrayList<Show> listShow = new ArrayList<Show>();
+				for(RoomPlanning rp : Planning.getInstance().getPlannings()) {
+					if(!listShow.contains(rp.getShow()))
+							listShow.add(rp.getShow());
+				}
+				if(listShow.size() > 0) {
+					listPlanning lp = new listPlanning(listShow);
+					lp.setVisible(true);
+				}
 			}
 		});
 
@@ -388,37 +419,9 @@ public class FRAMES extends JFrame {
 				if (listShow.size() > 0) {
 					CreatePlanning cp = new CreatePlanning((Organizer) mainUser, listShow);
 					cp.setVisible(true);
-				} else JOptionPane.showMessageDialog(null, "Aucun spectacle n'est inscrit dans votre base de données !");
+				} else
+					JOptionPane.showMessageDialog(null, "Aucun spectacle n'est inscrit dans votre base de données !");
 
-			}
-		});
-
-		// =================================================================================
-		// Bouton réservation de ticket
-		// =================================================================================
-		lblClient_Booking.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO : réservation de ticket
-				ArrayList<Show> listOfShow = new ArrayList<Show>();
-				for (RoomPlanning planning : Planning.getInstance().getPlannings())
-					if (!listOfShow.contains(planning.getShow()))
-						listOfShow.add(planning.getShow());
-				if(listOfShow.size() > 0) {
-					CommandTicket ct = new CommandTicket((Client) mainUser, listOfShow);
-					ct.setVisible(true);
-				}else JOptionPane.showMessageDialog(null, "Aucun spectacle n'est prévu pour le moment. C'EST LE CONFINEMENT OKAY !?");
-				
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 20));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				lblClient_Booking.setFont(new Font("Stencil", Font.PLAIN, 18));
 			}
 		});
 
@@ -431,6 +434,7 @@ public class FRAMES extends JFrame {
 				panel_SignIn.setVisible(false);
 				panel_Client.setVisible(false);
 				panel_Organizer.setVisible(false);
+				panel_Manager.setVisible(false);
 				panel_Login.setVisible(true);
 				lblLogo.setToolTipText("Vous n'\u00EAtes pas encore connect\u00E9");
 				lblLogo.setEnabled(false);
@@ -468,6 +472,7 @@ public class FRAMES extends JFrame {
 							panel_Client.setVisible(false);
 							panel_Organizer.setVisible(true);
 							panel_Login.setVisible(false);
+							panel_Manager.setVisible(false);
 							mainUser = new Organizer(user);
 							break;
 
@@ -475,6 +480,7 @@ public class FRAMES extends JFrame {
 							panel_Client.setVisible(true);
 							panel_Organizer.setVisible(false);
 							panel_Login.setVisible(false);
+							panel_Manager.setVisible(false);
 							mainUser = new Client(user);
 							break;
 
@@ -482,13 +488,15 @@ public class FRAMES extends JFrame {
 							panel_Client.setVisible(false);
 							panel_Organizer.setVisible(false);
 							panel_Login.setVisible(false);
+							panel_Manager.setVisible(false);
 							mainUser = new Artist(user);
 							break;
 
 						case "Manager":
 							panel_Client.setVisible(false);
-							panel_Organizer.setVisible(true);
+							panel_Organizer.setVisible(false);
 							panel_Login.setVisible(false);
+							panel_Manager.setVisible(true);
 							mainUser = new Manager(user);
 							break;
 						default:
@@ -519,7 +527,7 @@ public class FRAMES extends JFrame {
 						if (tmpUser.isValidEmail()) {
 							User emailUser = new User(txtFLogin_Email.getText());
 							User user = emailUser.find();
-							if (user.find() == null) {
+							if (user == null) {
 								// Création de l'utilisateur final
 								User finalUser = null;
 								// Selon le type d'utilisateur choisis
@@ -545,8 +553,7 @@ public class FRAMES extends JFrame {
 								} else
 									JOptionPane.showMessageDialog(null, "ERREUR INNATENDUE : USER NON TYPE");
 
-							} else
-								JOptionPane.showMessageDialog(null, "Cette addresse email est déjà enregistrée !");
+							} else JOptionPane.showMessageDialog(null, "Cette addresse email est déjà enregistrée !");
 
 						} else
 							JOptionPane.showMessageDialog(null, "L'adresse email fournie n'est pas valide.");
